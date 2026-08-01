@@ -1,25 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}
-Inicio
-{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
 
-<div class="text-center">
+<h2 class="mb-4">
+    Bienvenido a HospitalLearning
+</h2>
 
-    <h1 class="display-3 fw-bold">
-        Bienvenido a HospitalLearning
-    </h1>
+<p class="text-muted">
+    Plataforma de capacitación para profesionales de la salud.
+</p>
 
-    <p class="lead">
-        Plataforma de capacitación para profesionales de la salud.
-    </p>
-
-    <a href="#" class="btn btn-primary btn-lg mt-3">
-        Comenzar
-    </a>
-
-</div>
+{% include "components/stats_cards.html" %}
 
 {% endblock %}
