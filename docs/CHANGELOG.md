@@ -62,3 +62,26 @@ Este documento registra los principales avances realizados durante el desarrollo
 - Se realizó commit del Sprint 1.
 - Se publicó el Sprint 1 en GitHub.
 - Se creó la etiqueta Git: sprint-1.
+---
+
+## 2026-08-02
+
+### Sprint 2 - Modelo de Usuario Personalizado
+
+#### Usuarios
+
+- Se creó el modelo `CustomUser` heredando de `AbstractUser`.
+- Se agregaron los campos:
+  - Tipo de documento.
+  - Número de documento.
+  - Profesión.
+  - Teléfono.
+- Se configuró `AUTH_USER_MODEL`.
+- Se reconstruyó la base de datos para utilizar `CustomUser` desde el inicio del proyecto.
+- Se registró `CustomUser` en Django Admin.
+- Se verificó el acceso al panel de administración con el nuevo modelo de usuario.
+
+#### Arquitectura
+
+- Se confirmó que el usuario representa a una persona única.
+- Se definió que las IPS y los tipos de vinculación serán administrados mediante un modelo independiente de Vinculación.
