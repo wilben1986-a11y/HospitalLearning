@@ -188,6 +188,13 @@ Una acción de formación podrá ser asignada a uno o varios usuarios y conserva
 - Estado (Borrador, Publicada, Archivada).
 - Fecha de creación.
 - Fecha de actualización.
+- Requiere pretest.
+- Requiere evaluación final.
+- Requiere completar todo el contenido.
+- Puntaje mínimo de aprobación.
+- Número máximo de intentos.
+- Genera certificado.
+- Emisión automática del certificado.
 
 ## Tipos de acción de formación
 
@@ -507,6 +514,9 @@ Un Tipo de Acción:
 - El Tipo de Acción define la configuración por defecto de las Acciones de Formación asociadas.
 - Una Acción de Formación podrá personalizar estas reglas cuando la institución lo autorice.
 - Una Acción de Formación solo podrá cambiar de Tipo mientras permanezca en estado Borrador.
+- La obligatoriedad del pretest y de la evaluación final será definida por el administrador para cada Acción de Formación.
+- Los parámetros pedagógicos podrán modificarse únicamente mientras la Acción de Formación esté en estado Borrador.
+- Una vez publicada, no podrán modificarse los parámetros que afecten la aprobación, el cumplimiento o la certificación.
 
 # Entidad: Acción de Formación
 
@@ -546,3 +556,53 @@ Una Acción de Formación:
 - Una Acción de Formación archivada no podrá asignarse a nuevos participantes.
 - Las versiones anteriores conservarán íntegramente su historial.
 - No se permitirá la eliminación física de una Acción de Formación cuando tenga Procesos Formativos asociados.
+
+## Reglas funcionales
+
+- Toda Acción de Formación utilizará como configuración inicial las reglas definidas por su Tipo de Acción.
+- La institución podrá personalizar dichas reglas cuando su política interna lo permita.
+- La versión inicial de toda Acción de Formación será la 1.0.
+- Cada nueva versión conservará el historial de las versiones anteriores.
+- Una Acción de Formación solo podrá publicarse cuando tenga toda la información obligatoria completa.
+
+---
+
+# Entidad: Contenido de la Capacitación
+
+Representa un recurso educativo asociado a una Acción de Formación.
+
+## Información general
+
+- Acción de Formación.
+- Título.
+- Descripción.
+- Tipo de contenido.
+- Archivo o enlace.
+- Orden de visualización.
+- Estado activo o inactivo.
+- Responsable de creación.
+- Fecha de creación.
+- Fecha de actualización.
+
+## Relaciones
+
+Un Contenido de la Capacitación:
+
+- Pertenece a una única Acción de Formación.
+- Puede relacionarse con un recurso de la Biblioteca Documental.
+- Puede relacionarse con un recurso de la Biblioteca Multimedia.
+
+## Restricciones
+
+- Todo contenido deberá pertenecer a una Acción de Formación.
+- El orden de visualización deberá ser un número entero positivo.
+- Los contenidos inactivos no serán visibles para los participantes.
+- El archivo y el enlace serán opcionales individualmente, pero deberá existir al menos uno de los dos.
+- Los contenidos utilizados conservarán su trazabilidad.
+
+## Reglas funcionales
+
+- Una Acción de Formación podrá tener múltiples contenidos.
+- Los contenidos se mostrarán según el orden configurado.
+- Un contenido podrá activarse o inactivarse sin eliminar su historial.
+- Los materiales institucionales podrán reutilizarse mediante las bibliotecas documental y multimedia.

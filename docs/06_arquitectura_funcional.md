@@ -771,6 +771,20 @@ El módulo permitirá:
 Administrar las acciones de formación continua virtuales creadas por cada institución, incluyendo su clasificación, contenido, destinatarios, versión, estado y reglas de cumplimiento.
 ### Información principal
 
+### Configuración pedagógica
+
+Al crear o editar una Acción de Formación en estado Borrador, el administrador definirá:
+
+- Si requiere pretest.
+- Si requiere evaluación final.
+- Si el participante debe completar todo el contenido.
+- Puntaje mínimo de aprobación, cuando exista evaluación final.
+- Número máximo de intentos, cuando aplique.
+- Si genera certificado.
+- Si el certificado se emite automáticamente al cumplir los requisitos.
+
+El pretest y la evaluación final serán componentes opcionales e independientes del contenido educativo principal.
+
 Cada Acción de Formación deberá registrar:
 
 - Institución.
@@ -816,6 +830,14 @@ El módulo permitirá:
 
 8. Las reglas del Tipo de Acción se utilizarán como configuración inicial y podrán personalizarse cuando la institución lo autorice.
 
+9. La obligatoriedad del pretest y de la evaluación final será definida por el administrador para cada Acción de Formación.
+
+10. El contenido educativo principal será independiente de las evaluaciones.
+
+11. Los parámetros pedagógicos podrán modificarse mientras la Acción de Formación permanezca en estado Borrador.
+
+12. Una vez publicada la Acción de Formación, los parámetros que afecten el cumplimiento, la aprobación o la certificación quedarán bloqueados.
+
 ### Estados
 
 Una Acción de Formación podrá encontrarse en uno de los siguientes estados:
@@ -839,3 +861,175 @@ Una Acción de Formación:
 ### Resultado esperado
 
 Cada Acción de Formación será la unidad académica central de HospitalLearning y concentrará toda la información necesaria para su ejecución, seguimiento, evaluación, certificación y trazabilidad, manteniendo la integridad del historial institucional.
+
+## 20. FICHA FUNCIONAL: CONTENIDO DE LA CAPACITACIÓN
+
+### Responsabilidad
+
+Administrar todos los recursos de aprendizaje asociados a una Acción de Formación, permitiendo que los participantes accedan al contenido académico necesario para completar satisfactoriamente la capacitación.
+
+---
+
+### Objetivo
+
+Centralizar el material educativo de cada capacitación, garantizando su organización, disponibilidad, control de versiones y reutilización institucional.
+
+---
+
+### Información principal
+
+Cada contenido deberá registrar como mínimo:
+
+- Acción de Formación.
+- Tipo de contenido.
+- Título.
+- Descripción.
+- Orden de visualización.
+- Archivo o enlace.
+- Estado (Activo/Inactivo).
+- Fecha de creación.
+- Responsable de creación.
+
+---
+
+### Tipos de contenido
+
+El sistema permitirá registrar diferentes recursos, entre ellos:
+
+- Documento PDF.
+- Documento Word.
+- Presentación.
+- Hoja de cálculo.
+- Imagen.
+- Video.
+- Audio.
+- Enlace externo.
+- Archivo comprimido.
+- Otro recurso autorizado por la institución.
+
+---
+
+### Funciones
+
+El módulo permitirá:
+
+- Agregar contenido a una Acción de Formación.
+- Editar información del contenido.
+- Cambiar el orden de visualización.
+- Activar o inactivar recursos.
+- Reemplazar archivos conservando la trazabilidad.
+- Eliminar contenidos que aún no hayan sido utilizados.
+- Consultar todos los recursos asociados a una capacitación.
+
+---
+
+### Reglas de negocio
+
+1. Todo contenido pertenecerá a una única Acción de Formación.
+
+2. Una Acción de Formación podrá tener múltiples contenidos.
+
+3. El orden de visualización deberá ser configurable.
+
+4. Los contenidos inactivos no serán visibles para los participantes.
+
+5. No podrá eliminarse un contenido que haga parte de un proceso formativo en ejecución.
+
+6. La institución podrá definir qué tipos de archivos están permitidos.
+
+7. Los archivos deberán cumplir las políticas institucionales de seguridad.
+
+---
+
+### Relaciones
+
+Cada Contenido de Capacitación:
+
+- Pertenece a una única Acción de Formación.
+- Puede estar asociado a uno o varios documentos físicos.
+- Puede utilizar recursos almacenados en la Biblioteca Documental.
+- Puede utilizar recursos almacenados en la Biblioteca Multimedia.
+
+---
+
+### Resultado esperado
+
+Cada Acción de Formación contará con un conjunto organizado de recursos educativos, facilitando el acceso al material de estudio y garantizando la trazabilidad de los contenidos utilizados durante el proceso de capacitación.
+
+## 21. FICHA FUNCIONAL: ASIGNACIÓN DE CAPACITACIONES
+
+### Responsabilidad
+
+Determinar qué participantes deben desarrollar una Acción de Formación y generar el Proceso Formativo correspondiente para cada uno.
+
+### Objetivo
+
+Permitir que el administrador asigne capacitaciones de forma controlada, evitando duplicados y utilizando criterios institucionales claros.
+
+### Formas de asignación
+
+Una Acción de Formación podrá asignarse:
+
+- A todos los participantes con vinculación activa en la institución.
+- A participantes vinculados con uno o varios servicios específicos.
+- De forma individual a uno o varios participantes.
+
+### Información principal
+
+Cada asignación deberá registrar:
+
+- Acción de Formación.
+- Institución.
+- Forma de asignación.
+- Servicios destinatarios, cuando aplique.
+- Participantes seleccionados, cuando aplique.
+- Responsable de la asignación.
+- Fecha de asignación.
+- Estado de la asignación.
+
+### Funciones
+
+El módulo permitirá:
+
+- Seleccionar la Acción de Formación que será asignada.
+- Definir la población destinataria.
+- Asignar por institución.
+- Asignar por servicios.
+- Asignar individualmente.
+- Consultar las asignaciones realizadas.
+- Evitar asignaciones duplicadas.
+- Generar automáticamente un Proceso Formativo para cada participante destinatario.
+
+### Reglas de negocio
+
+1. Solo podrán asignarse Acciones de Formación activas y publicadas.
+
+2. La asignación por institución incluirá a todos los participantes con vinculación activa y vigente.
+
+3. La asignación por servicios incluirá a los participantes vinculados con al menos uno de los servicios seleccionados.
+
+4. La asignación individual permitirá seleccionar participantes específicos.
+
+5. Cada asignación generará un Proceso Formativo para el participante y la versión correspondiente de la Acción de Formación.
+
+6. No se crearán Procesos Formativos duplicados para el mismo participante, Acción de Formación y versión.
+
+7. Los cambios posteriores de servicio o vinculación no eliminarán los Procesos Formativos ya generados.
+
+8. Toda asignación deberá conservar el responsable y la fecha de creación para efectos de trazabilidad.
+
+9. Una asignación no eliminará ni modificará Procesos Formativos históricos.
+
+### Relaciones
+
+Una Asignación de Capacitación:
+
+- Pertenece a una Acción de Formación.
+- Pertenece a una institución.
+- Puede relacionarse con uno o varios servicios.
+- Puede relacionarse con uno o varios participantes.
+- Puede generar múltiples Procesos Formativos.
+
+### Resultado esperado
+
+El administrador podrá definir claramente a quién corresponde cada capacitación y el sistema generará los Procesos Formativos necesarios sin duplicar registros ni alterar el historial de los participantes.
