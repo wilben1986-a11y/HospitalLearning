@@ -85,3 +85,47 @@ Este documento registra los principales avances realizados durante el desarrollo
 
 - Se confirmó que el usuario representa a una persona única.
 - Se definió que las IPS y los tipos de vinculación serán administrados mediante un modelo independiente de Vinculación.
+
+## 2026-08-02
+
+### Sprint 2 - Arquitectura Funcional y Servicios
+
+#### Arquitectura funcional
+
+- Se inició el documento `06_arquitectura_funcional.md`.
+- Se definió el propósito de HospitalLearning.
+- Se estableció el principio rector de la plataforma.
+- Se documentaron los actores del sistema.
+- Se definieron los módulos funcionales.
+- Se documentaron las reglas de negocio generales.
+- Se incorporó la filosofía de diseño.
+- Se documentó el flujo general de las acciones de formación.
+- Se definió la estructura funcional basada en:
+  - Tipo de Acción.
+  - Acción de Formación.
+  - Proceso Formativo del Participante.
+  - Historial Formativo.
+- Se documentó el Motor de Asignación.
+- Se inició la revisión funcional de los módulos.
+- Se completaron las fichas funcionales de:
+  - Instituciones.
+  - Servicios.
+  - Usuarios.
+  - Vinculaciones.
+- Se incorporó el Mapa Maestro de Relaciones Funcionales.
+
+#### Servicios
+
+- Se agregó la validación para impedir que un subservicio pertenezca a una institución diferente de su servicio principal.
+- Se verificó el correcto funcionamiento mediante `python manage.py check`.
+- Se comprobó el acceso al panel de administración sin errores.
+
+#### Metodología
+
+- Se adoptó oficialmente una metodología de desarrollo basada en:
+  - Arquitectura funcional.
+  - Modelo de datos.
+  - Implementación.
+  - Validación.
+  - Documentación.
+  - Respaldo en GitHub.

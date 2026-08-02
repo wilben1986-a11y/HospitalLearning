@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
 
 class Institution(models.Model):
     """
@@ -102,5 +102,16 @@ class Service(models.Model):
             )
         ]
 
+def clean(self):
+    if self.parent and self.parent.institution_id != self.institution_id:
+        raise ValidationError(
+            {
+                "parent": (
+                    "El servicio principal debe pertenecer "
+                    "a la misma institución."
+                )
+            }
+        )
+        
     def __str__(self):
         return f"{self.name} - {self.institution}"
