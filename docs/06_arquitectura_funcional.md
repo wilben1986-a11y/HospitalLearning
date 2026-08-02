@@ -764,3 +764,78 @@ El módulo permitirá:
 8. Una Acción de Formación solo podrá cambiar de Tipo mientras permanezca en estado Borrador. Una vez publicada, el Tipo de Acción quedará bloqueado.
 
 9. Los Tipos de Acción no podrán eliminarse físicamente. Solo podrán inactivarse para preservar la integridad del historial institucional y de las Acciones de Formación asociadas.
+
+## 19. FICHA FUNCIONAL: ACCIONES DE FORMACIÓN
+### Responsabilidad
+
+Administrar las acciones de formación continua virtuales creadas por cada institución, incluyendo su clasificación, contenido, destinatarios, versión, estado y reglas de cumplimiento.
+### Información principal
+
+Cada Acción de Formación deberá registrar:
+
+- Institución.
+- Tipo de Acción.
+- Nombre.
+- Código.
+- Objetivo.
+- Descripción.
+- Versión.
+- Estado.
+- Responsable de la creación.
+- Fecha de creación.
+- Fecha de publicación (cuando aplique).
+
+### Funciones
+
+El módulo permitirá:
+
+- Crear Acciones de Formación.
+- Editarlas mientras permanezcan en estado Borrador.
+- Publicarlas.
+- Archivarlas.
+- Asociarlas a un Tipo de Acción.
+- Asociar documentos y recursos multimedia.
+- Definir la población objetivo.
+- Configurar las reglas específicas de cumplimiento cuando la institución lo autorice.
+
+### Reglas de negocio
+
+1. Toda Acción de Formación pertenecerá a una única institución.
+
+2. Toda Acción de Formación deberá estar asociada a un único Tipo de Acción.
+
+3. El código deberá ser único dentro de la institución.
+
+4. La versión inicial será la 1.0.
+
+5. Una Acción de Formación solo podrá cambiar de Tipo mientras permanezca en estado Borrador.
+
+6. Una Acción de Formación publicada conservará su historial y no podrá eliminarse físicamente.
+
+7. Las nuevas versiones no modificarán los Procesos Formativos ya finalizados.
+
+8. Las reglas del Tipo de Acción se utilizarán como configuración inicial y podrán personalizarse cuando la institución lo autorice.
+
+### Estados
+
+Una Acción de Formación podrá encontrarse en uno de los siguientes estados:
+
+- **Borrador:** puede modificarse libremente.
+- **Publicada:** disponible para asignación y ejecución.
+- **Archivada:** conserva su historial, pero ya no podrá asignarse a nuevos participantes.
+
+### Relaciones
+
+Una Acción de Formación:
+
+- Pertenece a una única institución.
+- Pertenece a un único Tipo de Acción.
+- Puede tener múltiples documentos de apoyo.
+- Puede tener múltiples recursos multimedia.
+- Puede tener múltiples evaluaciones.
+- Puede generar múltiples Procesos Formativos.
+- Puede generar múltiples certificados.
+
+### Resultado esperado
+
+Cada Acción de Formación será la unidad académica central de HospitalLearning y concentrará toda la información necesaria para su ejecución, seguimiento, evaluación, certificación y trazabilidad, manteniendo la integridad del historial institucional.

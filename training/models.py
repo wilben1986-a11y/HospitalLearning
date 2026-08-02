@@ -106,3 +106,98 @@ class ActionType(models.Model):
 
     def __str__(self):
         return f"{self.code} - {self.name}"
+
+
+class TrainingAction(models.Model):
+    """
+    Representa una acción de formación creada por una institución.
+    """
+
+    STATUS_CHOICES = [
+        ("DRAFT", "Borrador"),
+        ("PUBLISHED", "Publicada"),
+        ("ARCHIVED", "Archivada"),
+    ]
+
+    institution = models.ForeignKey(
+        "institutions.Institution",
+        on_delete=models.PROTECT,
+        related_name="training_actions",
+        verbose_name="Institución",
+    )
+
+    action_type = models.ForeignKey(
+        "training.ActionType",
+        on_delete=models.PROTECT,
+        related_name="training_actions",
+        verbose_name="Tipo de acción",
+    )
+
+    name = models.CharField(
+        max_length=200,
+        verbose_name="Nombre",
+    )
+
+    code = models.CharField(
+        max_length=30,
+        verbose_name="Código",
+    )
+
+    objective = models.TextField(
+        verbose_name="Objetivo",
+    )
+
+    description = models.TextField(
+        blank=True,
+        verbose_name="Descripción",
+    )
+
+    version = models.CharField(
+        max_length=20,
+        default="1.0",
+        verbose_name="Versión",
+    )
+
+    status = models.CharField(
+        max_length=15,
+        choices=STATUS_CHOICES,
+        default="DRAFT",
+        verbose_name="Estado",
+    )
+
+    created_by = models.ForeignKey(
+        "users.CustomUser",
+        on_delete=models.PROTECT,
+        related_name="training_actions_created",
+        verbose_name="Responsable de la creación",
+    )
+
+    publication_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name="Fecha de publicación",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha de creación",
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="Última actualización",
+    )
+
+    class Meta:
+        verbose_name = "Acción de formación"
+        verbose_name_plural = "Acciones de formación"
+        ordering = ["institution", "name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["institution", "code"],
+                name="unique_training_action_code_per_institution",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.code} - {self.name} (v{self.version})"

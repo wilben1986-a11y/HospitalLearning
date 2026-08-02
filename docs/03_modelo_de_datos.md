@@ -507,3 +507,42 @@ Un Tipo de Acción:
 - El Tipo de Acción define la configuración por defecto de las Acciones de Formación asociadas.
 - Una Acción de Formación podrá personalizar estas reglas cuando la institución lo autorice.
 - Una Acción de Formación solo podrá cambiar de Tipo mientras permanezca en estado Borrador.
+
+# Entidad: Acción de Formación
+
+Representa la unidad académica central de HospitalLearning. Contiene toda la configuración necesaria para ejecutar una acción de formación, incluyendo su clasificación, contenido, versión, estado y reglas de cumplimiento.
+
+## Información general
+
+- Institución.
+- Tipo de Acción.
+- Nombre.
+- Código.
+- Objetivo.
+- Descripción.
+- Versión.
+- Estado.
+- Responsable de la creación.
+- Fecha de creación.
+- Fecha de publicación.
+
+## Relaciones
+
+Una Acción de Formación:
+
+- Pertenece a una única institución.
+- Pertenece a un único Tipo de Acción.
+- Puede tener múltiples documentos asociados.
+- Puede tener múltiples recursos multimedia.
+- Puede tener múltiples evaluaciones.
+- Puede generar múltiples Procesos Formativos.
+- Puede generar múltiples certificados.
+
+## Restricciones
+
+- El código deberá ser único dentro de la institución.
+- Toda Acción de Formación deberá pertenecer a un único Tipo de Acción.
+- Una Acción de Formación publicada no podrá cambiar de Tipo.
+- Una Acción de Formación archivada no podrá asignarse a nuevos participantes.
+- Las versiones anteriores conservarán íntegramente su historial.
+- No se permitirá la eliminación física de una Acción de Formación cuando tenga Procesos Formativos asociados.

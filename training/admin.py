@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ActionType
+from .models import ActionType, TrainingAction
 
 
 @admin.register(ActionType)
@@ -18,6 +18,34 @@ class ActionTypeAdmin(admin.ModelAdmin):
         "active",
         "requires_certificate",
         "requires_renewal",
+    )
+
+    search_fields = (
+        "code",
+        "name",
+    )
+
+    ordering = (
+        "institution",
+        "name",
+    )
+
+
+@admin.register(TrainingAction)
+class TrainingActionAdmin(admin.ModelAdmin):
+    list_display = (
+        "code",
+        "name",
+        "institution",
+        "action_type",
+        "version",
+        "status",
+    )
+
+    list_filter = (
+        "institution",
+        "action_type",
+        "status",
     )
 
     search_fields = (
