@@ -60,12 +60,6 @@ class InstitutionalLink(models.Model):
     Los cambios de servicio no eliminan su historial de formación.
     """
 
-    ROLE_CHOICES = [
-        ("ADMINISTRADOR", "Administrador"),
-        ("INSTRUCTOR", "Instructor"),
-        ("PARTICIPANTE", "Participante"),
-    ]
-
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
@@ -87,16 +81,19 @@ class InstitutionalLink(models.Model):
         verbose_name="Servicios",
     )
 
-    role = models.CharField(
-        max_length=20,
-        choices=ROLE_CHOICES,
-        default="PARTICIPANTE",
-        verbose_name="Rol en la plataforma",
-    )
-
     active = models.BooleanField(
         default=True,
         verbose_name="Vinculación activa",
+    )
+
+    start_date = models.DateField(
+        verbose_name="Fecha de inicio",
+    )
+
+    end_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name="Fecha de finalización",
     )
 
     created_at = models.DateTimeField(
@@ -108,7 +105,7 @@ class InstitutionalLink(models.Model):
         auto_now=True,
         verbose_name="Última actualización",
     )
-
+    
     class Meta:
         verbose_name = "Vinculación institucional"
         verbose_name_plural = "Vinculaciones institucionales"

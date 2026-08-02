@@ -709,3 +709,58 @@ El módulo de Vinculaciones no administrará:
 - Horarios.
 - Turnos.
 - Información de nómina.
+
+## 18. FICHA FUNCIONAL: TIPOS DE ACCIÓN
+
+### Responsabilidad
+
+Administrar las categorías utilizadas por cada institución para clasificar sus acciones de formación continua.
+
+### Información principal
+
+Cada Tipo de Acción deberá registrar:
+
+- Institución.
+- Nombre.
+- Código.
+- Descripción (opcional).
+- Estado activo o inactivo.
+- Si requiere certificado.
+- Si tiene vigencia.
+- Si debe renovarse periódicamente.
+- Período de renovación, cuando corresponda.
+- Si una nueva versión obliga a repetir la formación.
+- Objetivo del tipo de acción.
+
+### Funciones
+
+El módulo permitirá:
+
+- Crear Tipos de Acción.
+- Editarlos.
+- Activarlos.
+- Inactivarlos.
+- Consultar Tipos de Acción activos e inactivos.
+- Utilizarlos para clasificar Acciones de Formación.
+- Definir reglas generales de cumplimiento.
+- Orientar la clasificación de las Acciones de Formación mediante un objetivo claramente definido.
+
+### Reglas de negocio
+
+1. Cada Tipo de Acción pertenecerá a una única institución.
+
+2. El nombre y el código deberán ser únicos dentro de la institución.
+
+3. Un Tipo de Acción inactivo no podrá utilizarse en nuevas Acciones de Formación.
+
+4. Inactivar un Tipo de Acción no modificará las Acciones de Formación históricas.
+
+5. El período de renovación solo será obligatorio cuando el tipo requiera renovación periódica.
+
+6. Las reglas del Tipo de Acción servirán como configuración inicial para las Acciones de Formación asociadas.
+
+7. Las políticas específicas de una Acción de Formación podrán ajustarse cuando la institución lo autorice.
+
+8. Una Acción de Formación solo podrá cambiar de Tipo mientras permanezca en estado Borrador. Una vez publicada, el Tipo de Acción quedará bloqueado.
+
+9. Los Tipos de Acción no podrán eliminarse físicamente. Solo podrán inactivarse para preservar la integridad del historial institucional y de las Acciones de Formación asociadas.

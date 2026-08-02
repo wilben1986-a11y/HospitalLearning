@@ -466,3 +466,44 @@ Los reportes podrán exportarse en formatos como:
 ## Observación
 
 Los reportes se construirán utilizando la información existente en las demás entidades del sistema, por lo que no requerirán almacenamiento propio.
+
+---
+
+# Entidad: Tipo de Acción
+
+Representa una categoría institucional utilizada para clasificar las acciones de formación continua y definir sus reglas generales de cumplimiento.
+
+## Información general
+
+- Institución.
+- Nombre.
+- Código.
+- Objetivo.
+- Descripción (opcional).
+- Estado activo o inactivo.
+- Requiere certificado.
+- Tiene vigencia.
+- Requiere renovación periódica.
+- Período de renovación, cuando aplique.
+- Una nueva versión obliga a repetir la formación.
+
+## Relaciones
+
+Un Tipo de Acción:
+
+- Pertenece a una única institución.
+- Puede estar asociado a múltiples Acciones de Formación.
+
+## Restricciones
+
+- El nombre debe ser único dentro de la institución.
+- El código debe ser único dentro de la institución.
+- El período de renovación será obligatorio cuando el tipo requiera renovación periódica.
+- No podrá eliminarse físicamente cuando tenga Acciones de Formación asociadas.
+- Un Tipo de Acción inactivo no podrá utilizarse en nuevas Acciones de Formación.
+
+## Reglas funcionales
+
+- El Tipo de Acción define la configuración por defecto de las Acciones de Formación asociadas.
+- Una Acción de Formación podrá personalizar estas reglas cuando la institución lo autorice.
+- Una Acción de Formación solo podrá cambiar de Tipo mientras permanezca en estado Borrador.
