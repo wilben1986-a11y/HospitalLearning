@@ -39,13 +39,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Aplicaciones del proyecto
-    'users',
-    'courses',
-    'lessons',
-    'quizzes',
-    'certificates',
-    'dashboard',
-    'pages',
+# Aplicaciones del proyecto
+
+'pages',
+
+'institutions',
+'users',
+
+'training',
+'resources',
+'assessments',
+
+'certificates',
+
+'dashboard',
+'reports',
 ]
 
 MIDDLEWARE = [
