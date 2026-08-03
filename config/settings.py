@@ -133,3 +133,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 AUTH_USER_MODEL = "users.CustomUser"
+
+# Archivos cargados por los usuarios
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+# Permitir contenidos de HospitalLearning dentro de iframes del mismo sitio
+X_FRAME_OPTIONS = "SAMEORIGIN"

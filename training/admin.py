@@ -90,6 +90,17 @@ class TrainingActionAdmin(admin.ModelAdmin):
             },
         ),
         (
+            "Contenido de aprendizaje",
+            {
+                "fields": (
+                    "learning_content",
+                ),
+                "description": (
+                    "Cargue el archivo HTML principal de la capacitación."
+                ),
+            },
+        ),
+        (
             "Publicación",
             {
                 "fields": (

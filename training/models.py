@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 from django.db import models
 
 
@@ -150,6 +151,22 @@ class TrainingAction(models.Model):
     description = models.TextField(
         blank=True,
         verbose_name="Descripción",
+    )
+
+    learning_content = models.FileField(
+        upload_to="training/html/%Y/%m/",
+        blank=True,
+        null=True,
+        validators=[
+            FileExtensionValidator(
+                allowed_extensions=["html", "htm"],
+            )
+        ],
+        verbose_name="Contenido HTML principal",
+        help_text=(
+            "Cargue un archivo HTML que contenga el contenido principal "
+            "de la capacitación."
+        ),
     )
 
     version = models.CharField(

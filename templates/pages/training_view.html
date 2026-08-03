@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ training.name }}</title>
+
+    <style>
+        body{
+            margin:0;
+            font-family:Arial,sans-serif;
+            background:#f4f6f8;
+        }
+
+        .header{
+            background:#1f4e78;
+            color:white;
+            padding:16px 24px;
+        }
+
+        .header h1{
+            margin:0;
+        }
+
+        .header p{
+            margin-top:6px;
+            opacity:.85;
+        }
+
+        iframe{
+            width:100%;
+            height:calc(100vh - 82px);
+            border:none;
+        }
+
+        .message{
+            margin:40px;
+            padding:30px;
+            background:white;
+            border-radius:8px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<header class="header">
+    <h1>{{ training.name }}</h1>
+    <p>{{ training.code }} · Versión {{ training.version }}</p>
+</header>
+
+{% if training.learning_content %}
+
+<iframe
+    src="{% url 'training_content' training.pk %}">
+</iframe>
+
+{% else %}
+
+<div class="message">
+    <h2>Contenido no disponible</h2>
+    <p>Esta capacitación todavía no tiene un archivo HTML asociado.</p>
+</div>
+
+{% endif %}
+
+</body>
+</html>

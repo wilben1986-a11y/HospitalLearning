@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}HospitalLearning{% endblock %}
 
 {% block content %}
 
@@ -13,5 +13,24 @@
 </p>
 
 {% include "components/stats_cards.html" %}
+
+<hr class="my-4">
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <h4>Prueba del visor de capacitación</h4>
+
+        <p>
+            Este botón abre una capacitación para verificar que el
+            contenido HTML se visualiza correctamente.
+        </p>
+
+        <a href="/capacitacion/1/" class="btn btn-primary">
+            Abrir capacitación de prueba
+        </a>
+
+    </div>
+</div>
 
 {% endblock %}
