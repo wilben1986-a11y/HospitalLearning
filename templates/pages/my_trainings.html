@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Mis capacitaciones{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    Mis capacitaciones
+</h2>
+
+{% if assignments %}
+
+    <div class="row g-4">
+
+        {% for assignment in assignments %}
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card h-100 shadow-sm">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            {{ assignment.training_action.name }}
+                        </h5>
+
+                        <p class="text-muted mb-2">
+                            {{ assignment.training_action.code }}
+                            · Versión {{ assignment.training_action.version }}
+                        </p>
+
+                        <p class="mb-2">
+                            <strong>Tipo:</strong>
+                            {{ assignment.training_action.action_type.name }}
+                        </p>
+
+                        <p class="mb-3">
+                            <strong>Estado:</strong>
+                            {{ assignment.get_status_display }}
+                        </p>
+
+                        <a
+                            href="{% url 'training_view' assignment.training_action.pk %}"
+                            class="btn btn-primary"
+                        >
+                            Abrir capacitación
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% else %}
+
+    <div class="alert alert-info">
+        No tienes capacitaciones asignadas.
+    </div>
+
+{% endif %}
+
+{% endblock %}

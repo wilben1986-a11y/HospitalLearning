@@ -2,8 +2,19 @@ from django.urls import path
 
 from . import views
 
+
 urlpatterns = [
-    path("", views.home, name="home"),
+    path(
+        "",
+        views.home,
+        name="home",
+    ),
+
+    path(
+        "mis-capacitaciones/",
+        views.my_trainings,
+        name="my_trainings",
+    ),
 
     path(
         "capacitacion/<int:pk>/",
