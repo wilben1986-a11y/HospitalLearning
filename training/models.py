@@ -425,27 +425,35 @@ class TrainingAssignment(models.Model):
 
 class TrainingResult(models.Model):
     """
-    Almacena el resultado de aprendizaje obtenido por un participante
-    en una capacitación asignada.
+    Almacena el resultado consolidado de aprendizaje
+    de un participante en una capacitación.
+
+    Se conserva:
+    - el pretest inicial;
+    - el mejor puntaje obtenido en el postest;
+    - el número de intentos de postest utilizados;
+    - la mejora del aprendizaje;
+    - el estado de aprobación;
+    - la fecha en que el participante finaliza la capacitación.
     """
 
-    assignment = models.ForeignKey(
+    assignment = models.OneToOneField(
         TrainingAssignment,
         on_delete=models.PROTECT,
-        related_name="results",
+        related_name="result",
         verbose_name="Asignación",
     )
 
     pretest_score = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
-        verbose_name="Puntaje pretest",
+        verbose_name="Puntaje pretest inicial",
     )
 
     posttest_score = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
-        verbose_name="Puntaje postest",
+        verbose_name="Mejor puntaje postest",
     )
 
     improvement_points = models.IntegerField(
@@ -460,25 +468,20 @@ class TrainingResult(models.Model):
     )
 
     attempt_number = models.PositiveSmallIntegerField(
-        default=1,
-        verbose_name="Número de intento",
+        default=0,
+        verbose_name="Intentos de postest utilizados",
     )
 
     completed_at = models.DateTimeField(
-        auto_now_add=True,
+        blank=True,
+        null=True,
         verbose_name="Fecha de finalización",
     )
 
     class Meta:
         verbose_name = "Resultado de capacitación"
         verbose_name_plural = "Resultados de capacitación"
-        ordering = ["-completed_at"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["assignment", "attempt_number"],
-                name="unique_training_result_attempt",
-            ),
-        ]
+        ordering = ["assignment"]
 
     def clean(self):
         if self.pretest_score is not None and self.pretest_score > 100:
@@ -499,6 +502,22 @@ class TrainingResult(models.Model):
                 }
             )
 
+        if self.assignment_id:
+            training = self.assignment.training_action
+
+            if (
+                training.max_attempts is not None
+                and self.attempt_number > training.max_attempts
+            ):
+                raise ValidationError(
+                    {
+                        "attempt_number": (
+                            "El número de intentos utilizados no puede superar "
+                            "el máximo permitido para esta capacitación."
+                        )
+                    }
+                )
+
     def save(self, *args, **kwargs):
         if (
             self.pretest_score is not None
@@ -510,10 +529,16 @@ class TrainingResult(models.Model):
         else:
             self.improvement_points = None
 
+        if self.assignment_id and self.posttest_score is not None:
+            training = self.assignment.training_action
+
+            if training.requires_final_evaluation:
+                passing_score = training.passing_score or 0
+                self.approved = self.posttest_score >= passing_score
+            else:
+                self.approved = True
+
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return (
-            f"{self.assignment} - "
-            f"Intento {self.attempt_number}"
-        )
+        return f"Resultado - {self.assignment}"
