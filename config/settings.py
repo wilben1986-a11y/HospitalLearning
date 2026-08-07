@@ -139,3 +139,5 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 # Permitir contenidos de HospitalLearning dentro de iframes del mismo sitio
 X_FRAME_OPTIONS = "SAMEORIGIN"
+LOGIN_REDIRECT_URL = "/mis-capacitaciones/"
+LOGOUT_REDIRECT_URL = "/cuenta/login/"
