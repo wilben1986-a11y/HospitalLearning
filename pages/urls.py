@@ -33,4 +33,10 @@ urlpatterns = [
         views.save_training_result,
         name="save_training_result",
     ),
+
+    path(
+        "capacitacion/<int:pk>/progreso/",
+        views.training_progress,
+        name="training_progress",
+    ),
 ]

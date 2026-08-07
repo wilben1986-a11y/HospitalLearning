@@ -328,6 +328,13 @@ class TrainingAssignment(models.Model):
         ("EXPIRED", "Vencida"),
     ]
 
+    PROGRESS_STAGE_CHOICES = [
+        ("PRETEST", "Pretest"),
+        ("CONTENT", "Contenido"),
+        ("POSTTEST", "Postest"),
+        ("COMPLETED", "Finalizada"),
+    ]
+
     training_action = models.ForeignKey(
         TrainingAction,
         on_delete=models.PROTECT,
@@ -365,6 +372,24 @@ class TrainingAssignment(models.Model):
         choices=STATUS_CHOICES,
         default="PENDING",
         verbose_name="Estado",
+    )
+
+    progress_stage = models.CharField(
+        max_length=15,
+        choices=PROGRESS_STAGE_CHOICES,
+        default="PRETEST",
+        verbose_name="Etapa actual",
+    )
+
+    current_module = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name="Módulo actual",
+    )
+
+    completed_modules = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name="Módulos completados",
     )
 
     observations = models.TextField(
@@ -415,6 +440,30 @@ class TrainingAssignment(models.Model):
                         "due_date": (
                             "La fecha límite no puede ser anterior "
                             "a la fecha de asignación."
+                        )
+                    }
+                )
+
+        if not isinstance(self.completed_modules, list):
+            raise ValidationError(
+                {
+                    "completed_modules": (
+                        "Los módulos completados deben almacenarse "
+                        "como una lista."
+                    )
+                }
+            )
+
+        for module_number in self.completed_modules:
+            if (
+                not isinstance(module_number, int)
+                or module_number < 0
+            ):
+                raise ValidationError(
+                    {
+                        "completed_modules": (
+                            "Los módulos completados deben contener "
+                            "únicamente números enteros válidos."
                         )
                     }
                 )

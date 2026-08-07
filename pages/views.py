@@ -6,7 +6,7 @@ from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.views.decorators.clickjacking import xframe_options_sameorigin
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_http_methods, require_POST
 
 from training.models import (
     TrainingAction,
@@ -132,6 +132,254 @@ def training_content(request, pk):
     return FileResponse(
         file_path.open("rb"),
         content_type="text/html; charset=utf-8",
+    )
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def training_progress(request, pk):
+    """
+    Consulta o actualiza el progreso de una capacitación
+    para el usuario autenticado.
+
+    GET:
+        Devuelve el progreso guardado.
+
+    POST:
+        Actualiza etapa actual, módulo actual
+        y módulos completados.
+    """
+
+    assignment = get_object_or_404(
+        TrainingAssignment.objects.select_related(
+            "training_action",
+            "result",
+        ),
+        training_action_id=pk,
+        user=request.user,
+        training_action__active=True,
+        training_action__status="PUBLISHED",
+    )
+
+    if request.method == "GET":
+        training = assignment.training_action
+
+        try:
+            result = assignment.result
+        except TrainingResult.DoesNotExist:
+            result = None
+
+        if result is not None:
+            pretest_score = result.pretest_score
+            best_posttest_score = result.posttest_score
+            improvement_points = result.improvement_points
+            attempts_used = result.attempt_number
+            approved = result.approved
+            completed = result.completed_at is not None
+            completed_at = (
+                result.completed_at.isoformat()
+                if result.completed_at
+                else None
+            )
+        else:
+            pretest_score = None
+            best_posttest_score = None
+            improvement_points = None
+            attempts_used = 0
+            approved = False
+            completed = False
+            completed_at = None
+
+        if (
+            training.max_attempts is not None
+            and training.requires_final_evaluation
+        ):
+            remaining_attempts = max(
+                training.max_attempts - attempts_used,
+                0,
+            )
+        else:
+            remaining_attempts = None
+
+        return JsonResponse(
+            {
+                "ok": True,
+                "progress_stage": assignment.progress_stage,
+                "current_module": assignment.current_module,
+                "completed_modules": assignment.completed_modules,
+                "status": assignment.status,
+                "requires_pretest": training.requires_pretest,
+                "requires_final_evaluation": (
+                    training.requires_final_evaluation
+                ),
+                "passing_score": training.passing_score,
+                "max_attempts": training.max_attempts,
+                "pretest_score": pretest_score,
+                "best_posttest_score": best_posttest_score,
+                "improvement_points": improvement_points,
+                "attempts_used": attempts_used,
+                "remaining_attempts": remaining_attempts,
+                "approved": approved,
+                "completed": completed,
+                "completed_at": completed_at,
+            }
+        )
+
+    if assignment.status in {
+        "APPROVED",
+        "NOT_APPROVED",
+    }:
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": (
+                    "La capacitación ya fue finalizada "
+                    "y su progreso no puede modificarse."
+                ),
+            },
+            status=400,
+        )
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": (
+                    "Los datos recibidos no tienen un formato válido."
+                ),
+            },
+            status=400,
+        )
+
+    progress_stage = data.get(
+        "progress_stage",
+        assignment.progress_stage,
+    )
+
+    current_module = data.get(
+        "current_module",
+        assignment.current_module,
+    )
+
+    completed_modules = data.get(
+        "completed_modules",
+        assignment.completed_modules,
+    )
+
+    valid_stages = {
+        "PRETEST",
+        "CONTENT",
+        "POSTTEST",
+        "COMPLETED",
+    }
+
+    if progress_stage not in valid_stages:
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": "La etapa de progreso no es válida.",
+            },
+            status=400,
+        )
+
+    try:
+        current_module = int(current_module)
+    except (TypeError, ValueError):
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": (
+                    "El módulo actual debe ser un número entero."
+                ),
+            },
+            status=400,
+        )
+
+    if current_module < 0:
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": (
+                    "El módulo actual no puede ser negativo."
+                ),
+            },
+            status=400,
+        )
+
+    if not isinstance(completed_modules, list):
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": (
+                    "Los módulos completados deben enviarse "
+                    "como una lista."
+                ),
+            },
+            status=400,
+        )
+
+    normalized_modules = []
+
+    for module_number in completed_modules:
+        try:
+            module_number = int(module_number)
+        except (TypeError, ValueError):
+            return JsonResponse(
+                {
+                    "ok": False,
+                    "error": (
+                        "Los módulos completados deben contener "
+                        "únicamente números enteros."
+                    ),
+                },
+                status=400,
+            )
+
+        if module_number < 0:
+            return JsonResponse(
+                {
+                    "ok": False,
+                    "error": (
+                        "Los números de módulo no pueden ser negativos."
+                    ),
+                },
+                status=400,
+            )
+
+        if module_number not in normalized_modules:
+            normalized_modules.append(module_number)
+
+    normalized_modules.sort()
+
+    assignment.progress_stage = progress_stage
+    assignment.current_module = current_module
+    assignment.completed_modules = normalized_modules
+
+    if assignment.status == "PENDING":
+        assignment.status = "IN_PROGRESS"
+
+    assignment.full_clean()
+
+    assignment.save(
+        update_fields=[
+            "progress_stage",
+            "current_module",
+            "completed_modules",
+            "status",
+            "updated_at",
+        ]
+    )
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "progress_stage": assignment.progress_stage,
+            "current_module": assignment.current_module,
+            "completed_modules": assignment.completed_modules,
+            "status": assignment.status,
+        }
     )
 
 
@@ -295,14 +543,18 @@ def save_training_result(request, pk):
             result.full_clean()
             result.save()
 
+        assignment.progress_stage = "CONTENT"
+
         if assignment.status == "PENDING":
             assignment.status = "IN_PROGRESS"
-            assignment.save(
-                update_fields=[
-                    "status",
-                    "updated_at",
-                ]
-            )
+
+        assignment.save(
+            update_fields=[
+                "progress_stage",
+                "status",
+                "updated_at",
+            ]
+        )
 
         return _result_response(
             result,
@@ -387,14 +639,18 @@ def save_training_result(request, pk):
         result.full_clean()
         result.save()
 
+        assignment.progress_stage = "POSTTEST"
+
         if assignment.status == "PENDING":
             assignment.status = "IN_PROGRESS"
-            assignment.save(
-                update_fields=[
-                    "status",
-                    "updated_at",
-                ]
-            )
+
+        assignment.save(
+            update_fields=[
+                "progress_stage",
+                "status",
+                "updated_at",
+            ]
+        )
 
         if training.max_attempts is None:
             can_retry = True
@@ -470,6 +726,8 @@ def save_training_result(request, pk):
         result.full_clean()
         result.save()
 
+        assignment.progress_stage = "COMPLETED"
+
         if result.approved:
             assignment.status = "APPROVED"
         else:
@@ -477,6 +735,7 @@ def save_training_result(request, pk):
 
         assignment.save(
             update_fields=[
+                "progress_stage",
                 "status",
                 "updated_at",
             ]
