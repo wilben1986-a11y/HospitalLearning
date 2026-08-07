@@ -421,3 +421,99 @@ class TrainingAssignment(models.Model):
 
     def __str__(self):
         return f"{self.training_action} - {self.user}"
+
+
+class TrainingResult(models.Model):
+    """
+    Almacena el resultado de aprendizaje obtenido por un participante
+    en una capacitación asignada.
+    """
+
+    assignment = models.ForeignKey(
+        TrainingAssignment,
+        on_delete=models.PROTECT,
+        related_name="results",
+        verbose_name="Asignación",
+    )
+
+    pretest_score = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        verbose_name="Puntaje pretest",
+    )
+
+    posttest_score = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        verbose_name="Puntaje postest",
+    )
+
+    improvement_points = models.IntegerField(
+        blank=True,
+        null=True,
+        verbose_name="Mejora en puntos",
+    )
+
+    approved = models.BooleanField(
+        default=False,
+        verbose_name="Aprobado",
+    )
+
+    attempt_number = models.PositiveSmallIntegerField(
+        default=1,
+        verbose_name="Número de intento",
+    )
+
+    completed_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha de finalización",
+    )
+
+    class Meta:
+        verbose_name = "Resultado de capacitación"
+        verbose_name_plural = "Resultados de capacitación"
+        ordering = ["-completed_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["assignment", "attempt_number"],
+                name="unique_training_result_attempt",
+            ),
+        ]
+
+    def clean(self):
+        if self.pretest_score is not None and self.pretest_score > 100:
+            raise ValidationError(
+                {
+                    "pretest_score": (
+                        "El puntaje del pretest no puede superar 100."
+                    )
+                }
+            )
+
+        if self.posttest_score is not None and self.posttest_score > 100:
+            raise ValidationError(
+                {
+                    "posttest_score": (
+                        "El puntaje del postest no puede superar 100."
+                    )
+                }
+            )
+
+    def save(self, *args, **kwargs):
+        if (
+            self.pretest_score is not None
+            and self.posttest_score is not None
+        ):
+            self.improvement_points = (
+                self.posttest_score - self.pretest_score
+            )
+        else:
+            self.improvement_points = None
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return (
+            f"{self.assignment} - "
+            f"Intento {self.attempt_number}"
+        )

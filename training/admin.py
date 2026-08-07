@@ -4,6 +4,7 @@ from .models import (
     ActionType,
     TrainingAction,
     TrainingAssignment,
+    TrainingResult,
 )
 
 
@@ -207,6 +208,67 @@ class TrainingAssignmentAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "observations",
+                )
+            },
+        ),
+    )
+
+
+@admin.register(TrainingResult)
+class TrainingResultAdmin(admin.ModelAdmin):
+    list_display = (
+        "assignment",
+        "pretest_score",
+        "posttest_score",
+        "improvement_points",
+        "approved",
+        "attempt_number",
+        "completed_at",
+    )
+
+    list_filter = (
+        "approved",
+        "attempt_number",
+        "completed_at",
+        "assignment__training_action__institution",
+    )
+
+    search_fields = (
+        "assignment__training_action__name",
+        "assignment__training_action__code",
+        "assignment__user__first_name",
+        "assignment__user__last_name",
+        "assignment__user__username",
+    )
+
+    ordering = (
+        "-completed_at",
+    )
+
+    readonly_fields = (
+        "improvement_points",
+        "completed_at",
+    )
+
+    fieldsets = (
+        (
+            "Resultado",
+            {
+                "fields": (
+                    "assignment",
+                    "pretest_score",
+                    "posttest_score",
+                    "improvement_points",
+                    "approved",
+                    "attempt_number",
+                )
+            },
+        ),
+        (
+            "Auditoría",
+            {
+                "fields": (
+                    "completed_at",
                 )
             },
         ),
