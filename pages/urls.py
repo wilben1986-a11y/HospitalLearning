@@ -39,4 +39,10 @@ urlpatterns = [
         views.training_progress,
         name="training_progress",
     ),
+
+    path(
+        "certificado/<int:pk>/",
+        views.certificate_view,
+        name="certificate_view",
+    ),
 ]

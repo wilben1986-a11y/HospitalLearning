@@ -4,247 +4,232 @@
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="mb-4">
+    <h2 class="mb-1">
+        Mis capacitaciones
+    </h2>
 
-    <div class="mb-4">
-        <h2 class="mb-1">
-            Mis capacitaciones
-        </h2>
-
-        <p class="text-muted mb-0">
-            Consulta tus capacitaciones pendientes y el historial de las ya realizadas.
-        </p>
-    </div>
+    <p class="text-muted mb-0">
+        Consulta tus capacitaciones pendientes y el historial de las ya realizadas.
+    </p>
+</div>
 
 
-    <!-- ===================================================== -->
-    <!-- CAPACITACIONES PENDIENTES -->
-    <!-- ===================================================== -->
+<!-- ===================================================== -->
+<!-- CAPACITACIONES PENDIENTES -->
+<!-- ===================================================== -->
 
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h4 class="mb-0">
-            Capacitaciones pendientes
-        </h4>
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="mb-0">
+        Capacitaciones pendientes
+    </h4>
 
-        <span class="badge bg-primary rounded-pill">
-            {{ pending_assignments|length }}
-        </span>
-    </div>
+    <span class="badge bg-primary rounded-pill">
+        {{ pending_assignments|length }}
+    </span>
+</div>
 
-    {% if pending_assignments %}
+{% if pending_assignments %}
 
-        <div class="row g-4 mb-5">
+    <div class="row g-4 mb-5">
 
-            {% for assignment in pending_assignments %}
+        {% for assignment in pending_assignments %}
 
-                <div class="col-md-6 col-xl-4">
+            <div class="col-md-6 col-xl-4">
 
-                    <div class="card h-100 shadow-sm border-0">
+                <div class="card h-100 shadow-sm border-0">
 
-                        <div class="card-body d-flex flex-column">
+                    <div class="card-body d-flex flex-column">
 
-                            <div class="mb-3">
+                        <div class="mb-3">
 
+                            {% if assignment.status == "IN_PROGRESS" %}
+                                <span class="badge bg-warning text-dark">
+                                    En progreso
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    Pendiente
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                        <h5 class="card-title">
+                            {{ assignment.training_action.name }}
+                        </h5>
+
+                        <p class="text-muted small mb-2">
+                            {{ assignment.training_action.code }}
+                            · Versión {{ assignment.training_action.version }}
+                        </p>
+
+                        <p class="mb-2">
+                            <strong>Tipo:</strong>
+                            {{ assignment.training_action.action_type.name }}
+                        </p>
+
+                        {% if assignment.due_date %}
+                            <p class="mb-3">
+                                <strong>Fecha límite:</strong>
+                                {{ assignment.due_date|date:"d/m/Y" }}
+                            </p>
+                        {% endif %}
+
+                        <div class="mt-auto pt-3">
+
+                            <a
+                                href="{% url 'training_view' assignment.training_action.pk %}"
+                                class="btn btn-primary w-100"
+                            >
                                 {% if assignment.status == "IN_PROGRESS" %}
-                                    <span class="badge bg-warning text-dark">
-                                        En progreso
-                                    </span>
+                                    Continuar capacitación
                                 {% else %}
-                                    <span class="badge bg-secondary">
-                                        Pendiente
-                                    </span>
+                                    Iniciar capacitación
                                 {% endif %}
+                            </a>
 
-                            </div>
+                        </div>
 
-                            <h5 class="card-title">
-                                {{ assignment.training_action.name }}
-                            </h5>
+                    </div>
 
-                            <p class="text-muted small mb-2">
-                                {{ assignment.training_action.code }}
-                                · Versión {{ assignment.training_action.version }}
-                            </p>
+                </div>
 
-                            <p class="mb-2">
-                                <strong>Tipo:</strong>
-                                {{ assignment.training_action.action_type.name }}
-                            </p>
+            </div>
 
-                            {% if assignment.due_date %}
-                                <p class="mb-3">
-                                    <strong>Fecha límite:</strong>
-                                    {{ assignment.due_date|date:"d/m/Y" }}
+        {% endfor %}
+
+    </div>
+
+{% else %}
+
+    <div class="alert alert-light border mb-5">
+        No tienes capacitaciones pendientes.
+    </div>
+
+{% endif %}
+
+
+<!-- ===================================================== -->
+<!-- CAPACITACIONES REALIZADAS -->
+<!-- ===================================================== -->
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h4 class="mb-0">
+        Capacitaciones realizadas
+    </h4>
+
+    <span class="badge bg-success rounded-pill">
+        {{ completed_assignments|length }}
+    </span>
+</div>
+
+{% if completed_assignments %}
+
+    <div class="row g-4">
+
+        {% for assignment in completed_assignments %}
+
+            <div class="col-md-6 col-xl-4">
+
+                <div class="card h-100 shadow-sm border-0">
+
+                    <div class="card-body d-flex flex-column">
+
+                        <div class="mb-3">
+
+                            {% if assignment.status == "APPROVED" %}
+                                <span class="badge bg-success">
+                                    Aprobada
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger">
+                                    No aprobada
+                                </span>
+                            {% endif %}
+
+                            <span class="badge bg-light text-dark border">
+                                Realizada
+                            </span>
+
+                        </div>
+
+                        <h5 class="card-title">
+                            {{ assignment.training_action.name }}
+                        </h5>
+
+                        <p class="text-muted small mb-3">
+                            {{ assignment.training_action.code }}
+                            · Versión {{ assignment.training_action.version }}
+                        </p>
+
+                        {% if assignment.result %}
+
+                            {% if assignment.result.pretest_score is not None %}
+                                <p class="mb-2">
+                                    <strong>Pretest inicial:</strong>
+                                    {{ assignment.result.pretest_score }} %
                                 </p>
                             {% endif %}
 
-                            <div class="mt-auto pt-3">
-
-                                <a
-                                    href="{% url 'training_view' assignment.training_action.pk %}"
-                                    class="btn btn-primary w-100"
-                                >
-                                    {% if assignment.status == "IN_PROGRESS" %}
-                                        Continuar capacitación
-                                    {% else %}
-                                        Iniciar capacitación
-                                    {% endif %}
-                                </a>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            {% endfor %}
-
-        </div>
-
-    {% else %}
-
-        <div class="alert alert-light border mb-5">
-            No tienes capacitaciones pendientes.
-        </div>
-
-    {% endif %}
-
-
-    <!-- ===================================================== -->
-    <!-- CAPACITACIONES REALIZADAS -->
-    <!-- ===================================================== -->
-
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h4 class="mb-0">
-            Capacitaciones realizadas
-        </h4>
-
-        <span class="badge bg-success rounded-pill">
-            {{ completed_assignments|length }}
-        </span>
-    </div>
-
-    {% if completed_assignments %}
-
-        <div class="row g-4">
-
-            {% for assignment in completed_assignments %}
-
-                <div class="col-md-6 col-xl-4">
-
-                    <div class="card h-100 shadow-sm border-0">
-
-                        <div class="card-body d-flex flex-column">
-
-                            <div class="mb-3">
-
-                                {% if assignment.status == "APPROVED" %}
-
-                                    <span class="badge bg-success">
-                                        Aprobada
-                                    </span>
-
-                                {% else %}
-
-                                    <span class="badge bg-danger">
-                                        No aprobada
-                                    </span>
-
-                                {% endif %}
-
-                                <span class="badge bg-light text-dark border">
-                                    Realizada
-                                </span>
-
-                            </div>
-
-                            <h5 class="card-title">
-                                {{ assignment.training_action.name }}
-                            </h5>
-
-                            <p class="text-muted small mb-3">
-                                {{ assignment.training_action.code }}
-                                · Versión {{ assignment.training_action.version }}
-                            </p>
-
-
-                            {% if assignment.result %}
-
-                                {% if assignment.result.pretest_score is not None %}
-
-                                    <p class="mb-2">
-                                        <strong>Pretest inicial:</strong>
-                                        {{ assignment.result.pretest_score }} %
-                                    </p>
-
-                                {% endif %}
-
-
-                                {% if assignment.result.posttest_score is not None %}
-
-                                    <p class="mb-2">
-                                        <strong>Mejor postest:</strong>
-                                        {{ assignment.result.posttest_score }} %
-                                    </p>
-
-                                {% endif %}
-
-
-                                {% if assignment.result.improvement_points is not None %}
-
-                                    <p class="mb-2">
-                                        <strong>Mejora:</strong>
-
-                                        {% if assignment.result.improvement_points > 0 %}
-                                            +{{ assignment.result.improvement_points }}
-                                        {% else %}
-                                            {{ assignment.result.improvement_points }}
-                                        {% endif %}
-
-                                        puntos
-                                    </p>
-
-                                {% endif %}
-
-
-                                {% if assignment.training_action.requires_final_evaluation %}
-
-                                    <p class="mb-2">
-                                        <strong>Intentos utilizados:</strong>
-                                        {{ assignment.result.attempt_number }}
-
-                                        {% if assignment.training_action.max_attempts %}
-                                            de {{ assignment.training_action.max_attempts }}
-                                        {% endif %}
-                                    </p>
-
-                                {% endif %}
-
-
-                                {% if assignment.result.completed_at %}
-
-                                    <p class="text-muted small mb-3">
-                                        Finalizada:
-                                        {{ assignment.result.completed_at|date:"d/m/Y H:i" }}
-                                    </p>
-
-                                {% endif %}
-
+                            {% if assignment.result.posttest_score is not None %}
+                                <p class="mb-2">
+                                    <strong>Mejor postest:</strong>
+                                    {{ assignment.result.posttest_score }} %
+                                </p>
                             {% endif %}
 
+                            {% if assignment.result.improvement_points is not None %}
+                                <p class="mb-2">
+                                    <strong>Mejora:</strong>
 
-                            <div class="mt-auto pt-3">
+                                    {% if assignment.result.improvement_points > 0 %}
+                                        +{{ assignment.result.improvement_points }}
+                                    {% else %}
+                                        {{ assignment.result.improvement_points }}
+                                    {% endif %}
 
+                                    puntos
+                                </p>
+                            {% endif %}
+
+                            {% if assignment.training_action.requires_final_evaluation %}
+                                <p class="mb-2">
+                                    <strong>Intentos utilizados:</strong>
+                                    {{ assignment.result.attempt_number }}
+
+                                    {% if assignment.training_action.max_attempts %}
+                                        de {{ assignment.training_action.max_attempts }}
+                                    {% endif %}
+                                </p>
+                            {% endif %}
+
+                            {% if assignment.result.completed_at %}
+                                <p class="text-muted small mb-3">
+                                    Finalizada:
+                                    {{ assignment.result.completed_at|date:"d/m/Y H:i" }}
+                                </p>
+                            {% endif %}
+
+                        {% endif %}
+
+                        <div class="mt-auto pt-3 d-grid gap-2">
+
+                            {% if assignment.certificate and assignment.certificate.active %}
                                 <a
-                                    href="{% url 'training_view' assignment.training_action.pk %}"
-                                    class="btn btn-outline-primary w-100"
+                                    href="{% url 'certificate_view' assignment.certificate.pk %}"
+                                    class="btn btn-success"
                                 >
-                                    Ver capacitación
+                                    Ver certificado
                                 </a>
+                            {% endif %}
 
-                            </div>
+                            <a
+                                href="{% url 'training_view' assignment.training_action.pk %}"
+                                class="btn btn-outline-primary"
+                            >
+                                Ver capacitación
+                            </a>
 
                         </div>
 
@@ -252,18 +237,18 @@
 
                 </div>
 
-            {% endfor %}
+            </div>
 
-        </div>
+        {% endfor %}
 
-    {% else %}
+    </div>
 
-        <div class="alert alert-light border">
-            Todavía no has finalizado capacitaciones.
-        </div>
+{% else %}
 
-    {% endif %}
+    <div class="alert alert-light border">
+        Todavía no has finalizado capacitaciones.
+    </div>
 
-</div>
+{% endif %}
 
 {% endblock %}

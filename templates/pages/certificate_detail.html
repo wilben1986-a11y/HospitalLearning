@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Certificado{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-5 text-center">
+
+            <p class="text-uppercase text-muted small mb-2">
+                Certificado de capacitación
+            </p>
+
+            <h2 class="mb-4">
+                {{ training.name }}
+            </h2>
+
+            <p class="mb-2">
+                Se certifica que
+            </p>
+
+            <h3 class="mb-4">
+                {{ assignment.user.get_full_name|default:assignment.user.username }}
+            </h3>
+
+            <p class="mb-4">
+                completó y aprobó satisfactoriamente esta acción de formación.
+            </p>
+
+            <div class="row justify-content-center g-3 mb-4">
+
+                <div class="col-md-4">
+                    <div class="border rounded p-3 h-100">
+                        <small class="text-muted d-block">
+                            Institución
+                        </small>
+                        <strong>
+                            {{ training.institution }}
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="border rounded p-3 h-100">
+                        <small class="text-muted d-block">
+                            Fecha de emisión
+                        </small>
+                        <strong>
+                            {{ certificate.issued_at|date:"d/m/Y" }}
+                        </strong>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="alert alert-light border">
+                <small class="text-muted d-block mb-1">
+                    Código de verificación
+                </small>
+                <code>{{ certificate.verification_code }}</code>
+            </div>
+
+            <a
+                href="{% url 'my_trainings' %}"
+                class="btn btn-outline-primary mt-3"
+            >
+                Volver a Mis capacitaciones
+            </a>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

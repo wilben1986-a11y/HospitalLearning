@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.http import require_http_methods, require_POST
 
+from certificates.models import Certificate
 from training.models import (
     TrainingAction,
     TrainingAssignment,
@@ -383,6 +384,37 @@ def training_progress(request, pk):
     )
 
 
+
+@login_required
+def certificate_view(request, pk):
+    """
+    Muestra un certificado activo perteneciente
+    al usuario autenticado.
+    """
+
+    certificate = get_object_or_404(
+        Certificate.objects.select_related(
+            "assignment",
+            "assignment__user",
+            "assignment__training_action",
+            "assignment__training_action__institution",
+        ),
+        pk=pk,
+        assignment__user=request.user,
+        active=True,
+    )
+
+    return render(
+        request,
+        "pages/certificate_detail.html",
+        {
+            "certificate": certificate,
+            "assignment": certificate.assignment,
+            "training": certificate.assignment.training_action,
+        },
+    )
+
+
 def _parse_score(value, field_name):
     """
     Convierte y valida un puntaje entre 0 y 100.
@@ -741,12 +773,36 @@ def save_training_result(request, pk):
             ]
         )
 
+        certificate = None
+        certificate_created = False
+
+        if (
+            result.approved
+            and training.generates_certificate
+            and training.automatic_certificate
+        ):
+            certificate, certificate_created = (
+                Certificate.objects.get_or_create(
+                    assignment=assignment,
+                )
+            )
+
+        extra_data = {
+            "message": (
+                "Capacitación finalizada correctamente."
+            ),
+            "certificate_available": certificate is not None,
+            "certificate_created": certificate_created,
+        }
+
+        if certificate is not None:
+            extra_data["certificate_id"] = certificate.pk
+            extra_data["verification_code"] = str(
+                certificate.verification_code
+            )
+
         return _result_response(
             result,
             training,
-            {
-                "message": (
-                    "Capacitación finalizada correctamente."
-                ),
-            },
+            extra_data,
         )
