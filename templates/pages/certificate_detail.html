@@ -4,72 +4,407 @@
 
 {% block content %}
 
-<div class="container py-4">
+<style>
+    .certificate-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-5 text-center">
+    .certificate-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
 
-            <p class="text-uppercase text-muted small mb-2">
-                Certificado de capacitación
-            </p>
+    .certificate-sheet {
+        position: relative;
+        min-height: 760px;
+        padding: 70px 80px;
+        background: #ffffff;
+        border: 12px solid #0f6b67;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+    }
 
-            <h2 class="mb-4">
-                {{ training.name }}
-            </h2>
+    .certificate-sheet::before {
+        content: "";
+        position: absolute;
+        inset: 18px;
+        border: 2px solid #d7b46a;
+        pointer-events: none;
+    }
 
-            <p class="mb-2">
+    .certificate-corner {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(15, 107, 103, 0.06);
+    }
+
+    .certificate-corner.top {
+        top: -90px;
+        right: -90px;
+    }
+
+    .certificate-corner.bottom {
+        bottom: -90px;
+        left: -90px;
+    }
+
+    .certificate-header {
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .certificate-logo-placeholder {
+        width: 88px;
+        height: 88px;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed #a8b9b7;
+        border-radius: 18px;
+        color: #7b8d8b;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .certificate-institution {
+        margin-bottom: 8px;
+        color: #0f6b67;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .certificate-title {
+        margin: 8px 0 10px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 54px;
+        font-weight: 600;
+        color: #1f2f33;
+    }
+
+    .certificate-subtitle {
+        color: #6d7c80;
+        font-size: 15px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .certificate-body {
+        position: relative;
+        z-index: 2;
+        margin-top: 55px;
+        text-align: center;
+    }
+
+    .certificate-body p {
+        margin-bottom: 12px;
+        color: #526166;
+        font-size: 17px;
+    }
+
+    .participant-name {
+        margin: 12px 0 24px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 42px;
+        font-weight: 600;
+        color: #0f6b67;
+    }
+
+    .training-name {
+        max-width: 900px;
+        margin: 18px auto 30px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 30px;
+        font-weight: 600;
+        color: #243438;
+        line-height: 1.25;
+    }
+
+    .certificate-data {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin: 35px 0;
+    }
+
+    .certificate-data-box {
+        padding: 16px;
+        border: 1px solid #d9e2e1;
+        border-radius: 12px;
+        background: #f8fbfa;
+    }
+
+    .certificate-data-box small {
+        display: block;
+        margin-bottom: 4px;
+        color: #7b8d8b;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .certificate-data-box strong {
+        color: #233336;
+        font-size: 14px;
+    }
+
+    .certificate-footer {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 50px;
+        margin-top: 55px;
+        align-items: end;
+    }
+
+    .signature-box {
+        text-align: center;
+    }
+
+    .signature-line {
+        width: 75%;
+        margin: 35px auto 8px;
+        border-top: 1px solid #7b8d8b;
+    }
+
+    .signature-box strong {
+        display: block;
+        color: #233336;
+    }
+
+    .signature-box small {
+        color: #7b8d8b;
+    }
+
+    .verification-box {
+        padding: 18px;
+        border: 1px solid #d9e2e1;
+        border-radius: 12px;
+        background: #fbfcfc;
+        text-align: center;
+    }
+
+    .verification-box small {
+        display: block;
+        margin-bottom: 5px;
+        color: #7b8d8b;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .verification-code {
+        word-break: break-all;
+        color: #0f6b67;
+        font-family: monospace;
+        font-size: 13px;
+    }
+
+    .certificate-note {
+        position: relative;
+        z-index: 2;
+        margin-top: 30px;
+        text-align: center;
+        color: #8b9799;
+        font-size: 11px;
+    }
+
+    @media print {
+        body {
+            background: white !important;
+        }
+
+        nav,
+        aside,
+        footer,
+        .certificate-actions {
+            display: none !important;
+        }
+
+        .certificate-wrapper {
+            max-width: none;
+            margin: 0;
+        }
+
+        .certificate-sheet {
+            box-shadow: none;
+            border-width: 8px;
+            min-height: auto;
+            page-break-inside: avoid;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .certificate-sheet {
+            padding: 45px 30px;
+        }
+
+        .certificate-data {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .certificate-footer {
+            grid-template-columns: 1fr;
+        }
+
+        .certificate-title {
+            font-size: 42px;
+        }
+
+        .participant-name {
+            font-size: 34px;
+        }
+    }
+</style>
+
+
+<div class="certificate-wrapper">
+
+    <div class="certificate-actions">
+
+        <a
+            href="{% url 'my_trainings' %}"
+            class="btn btn-outline-secondary"
+        >
+            Volver
+        </a>
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            onclick="window.print()"
+        >
+            Imprimir / Guardar como PDF
+        </button>
+
+    </div>
+
+
+    <div class="certificate-sheet">
+
+        <div class="certificate-corner top"></div>
+        <div class="certificate-corner bottom"></div>
+
+        <div class="certificate-header">
+
+            <div class="certificate-logo-placeholder">
+                Logo
+            </div>
+
+            <div class="certificate-institution">
+                {{ training.institution }}
+            </div>
+
+            <h1 class="certificate-title">
+                Certificado
+            </h1>
+
+            <div class="certificate-subtitle">
+                Acción de formación continua
+            </div>
+
+        </div>
+
+
+        <div class="certificate-body">
+
+            <p>
                 Se certifica que
             </p>
 
-            <h3 class="mb-4">
+            <div class="participant-name">
                 {{ assignment.user.get_full_name|default:assignment.user.username }}
-            </h3>
+            </div>
 
-            <p class="mb-4">
-                completó y aprobó satisfactoriamente esta acción de formación.
+            <p>
+                completó y aprobó satisfactoriamente la capacitación
             </p>
 
-            <div class="row justify-content-center g-3 mb-4">
+            <div class="training-name">
+                {{ training.name }}
+            </div>
 
-                <div class="col-md-4">
-                    <div class="border rounded p-3 h-100">
-                        <small class="text-muted d-block">
-                            Institución
-                        </small>
-                        <strong>
-                            {{ training.institution }}
-                        </strong>
-                    </div>
+            <div class="certificate-data">
+
+                <div class="certificate-data-box">
+                    <small>Código</small>
+                    <strong>{{ training.code }}</strong>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="border rounded p-3 h-100">
-                        <small class="text-muted d-block">
-                            Fecha de emisión
-                        </small>
-                        <strong>
-                            {{ certificate.issued_at|date:"d/m/Y" }}
-                        </strong>
-                    </div>
+                <div class="certificate-data-box">
+                    <small>Versión</small>
+                    <strong>{{ training.version }}</strong>
+                </div>
+
+                <div class="certificate-data-box">
+                    <small>Fecha de finalización</small>
+                    <strong>
+                        {{ assignment.result.completed_at|date:"d/m/Y" }}
+                    </strong>
+                </div>
+
+                <div class="certificate-data-box">
+                    <small>Resultado final</small>
+                    <strong>
+                        {{ assignment.result.posttest_score }} %
+                    </strong>
                 </div>
 
             </div>
-
-            <div class="alert alert-light border">
-                <small class="text-muted d-block mb-1">
-                    Código de verificación
-                </small>
-                <code>{{ certificate.verification_code }}</code>
-            </div>
-
-            <a
-                href="{% url 'my_trainings' %}"
-                class="btn btn-outline-primary mt-3"
-            >
-                Volver a Mis capacitaciones
-            </a>
 
         </div>
+
+
+        <div class="certificate-footer">
+
+            <div class="signature-box">
+
+                <div class="signature-line"></div>
+
+                <strong>
+                    Responsable institucional
+                </strong>
+
+                <small>
+                    Firma autorizada
+                </small>
+
+            </div>
+
+
+            <div class="verification-box">
+
+                <small>
+                    Código único de verificación
+                </small>
+
+                <div class="verification-code">
+                    {{ certificate.verification_code }}
+                </div>
+
+                <small class="mt-2">
+                    Emitido el {{ certificate.issued_at|date:"d/m/Y H:i" }}
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="certificate-note">
+            Este certificado corresponde a una acción de formación registrada en HospitalLearning.
+        </div>
+
     </div>
 
 </div>
