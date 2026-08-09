@@ -45,4 +45,10 @@ urlpatterns = [
         views.certificate_view,
         name="certificate_view",
     ),
+
+    path(
+        "certificado/<int:pk>/pdf/",
+        views.certificate_pdf,
+        name="certificate_pdf",
+    ),
 ]

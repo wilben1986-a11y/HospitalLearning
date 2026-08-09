@@ -13,6 +13,7 @@
     .certificate-actions {
         display: flex;
         justify-content: flex-end;
+        flex-wrap: wrap;
         gap: 10px;
         margin-bottom: 20px;
     }
@@ -281,11 +282,18 @@
 
         <button
             type="button"
-            class="btn btn-primary"
+            class="btn btn-outline-primary"
             onclick="window.print()"
         >
-            Imprimir / Guardar como PDF
+            Imprimir
         </button>
+
+        <a
+            href="{% url 'certificate_pdf' certificate.pk %}"
+            class="btn btn-primary"
+        >
+            Descargar PDF
+        </a>
 
     </div>
 
