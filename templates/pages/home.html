@@ -4,33 +4,13 @@
 
 {% block content %}
 
-<h2 class="mb-4">
-    Bienvenido a HospitalLearning
-</h2>
-
-<p class="text-muted">
-    Plataforma de capacitación para profesionales de la salud.
-</p>
+<div class="mb-4">
+    <h2 class="mb-1">Dashboard institucional</h2>
+    <p class="text-muted mb-0">
+        Seguimiento general de las acciones de formación continua.
+    </p>
+</div>
 
 {% include "components/stats_cards.html" %}
-
-<hr class="my-4">
-
-<div class="card shadow-sm">
-    <div class="card-body">
-
-        <h4>Prueba del visor de capacitación</h4>
-
-        <p>
-            Este botón abre una capacitación para verificar que el
-            contenido HTML se visualiza correctamente.
-        </p>
-
-        <a href="/capacitacion/1/" class="btn btn-primary">
-            Abrir capacitación de prueba
-        </a>
-
-    </div>
-</div>
 
 {% endblock %}

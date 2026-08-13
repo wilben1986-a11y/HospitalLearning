@@ -26,8 +26,49 @@ from training.models import (
 )
 
 
+@login_required
 def home(request):
-    return render(request, "pages/home.html")
+    """
+    Dashboard principal de HospitalLearning.
+
+    Esta versión muestra indicadores globales del sistema.
+    Posteriormente los indicadores se filtrarán por institución.
+    """
+
+    assignments = TrainingAssignment.objects.all()
+
+    total_participants = (
+        assignments.values("user_id")
+        .distinct()
+        .count()
+    )
+    total_assignments = assignments.count()
+    pending_assignments = assignments.filter(status="PENDING").count()
+    in_progress_assignments = assignments.filter(status="IN_PROGRESS").count()
+    approved_assignments = assignments.filter(status="APPROVED").count()
+    not_approved_assignments = assignments.filter(status="NOT_APPROVED").count()
+    completed_assignments = approved_assignments + not_approved_assignments
+
+    if total_assignments > 0:
+        compliance_percentage = round(
+            (completed_assignments / total_assignments) * 100,
+            1,
+        )
+    else:
+        compliance_percentage = 0
+
+    context = {
+        "total_participants": total_participants,
+        "total_assignments": total_assignments,
+        "completed_assignments": completed_assignments,
+        "compliance_percentage": compliance_percentage,
+        "pending_assignments": pending_assignments,
+        "in_progress_assignments": in_progress_assignments,
+        "approved_assignments": approved_assignments,
+        "not_approved_assignments": not_approved_assignments,
+    }
+
+    return render(request, "pages/home.html", context)
 
 
 @login_required
