@@ -3,15 +3,9 @@
     <div class="col-md-6 col-xl-3">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="text-muted">
-                    Asignadas
-                </h6>
-                <h2 class="mb-1">
-                    {{ total_assignments }}
-                </h2>
-                <small class="text-muted">
-                    Capacitaciones recibidas
-                </small>
+                <h6 class="text-muted">Asignadas</h6>
+                <h2 class="mb-1">{{ total_assignments }}</h2>
+                <small class="text-muted">Capacitaciones recibidas</small>
             </div>
         </div>
     </div>
@@ -19,15 +13,9 @@
     <div class="col-md-6 col-xl-3">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="text-muted">
-                    Pendientes
-                </h6>
-                <h2 class="mb-1">
-                    {{ pending_assignments }}
-                </h2>
-                <small class="text-muted">
-                    Aún no iniciadas
-                </small>
+                <h6 class="text-muted">Pendientes</h6>
+                <h2 class="mb-1">{{ pending_assignments }}</h2>
+                <small class="text-muted">Aún no iniciadas</small>
             </div>
         </div>
     </div>
@@ -35,15 +23,9 @@
     <div class="col-md-6 col-xl-3">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="text-muted">
-                    En progreso
-                </h6>
-                <h2 class="mb-1">
-                    {{ in_progress_assignments }}
-                </h2>
-                <small class="text-warning">
-                    En desarrollo
-                </small>
+                <h6 class="text-muted">En progreso</h6>
+                <h2 class="mb-1">{{ in_progress_assignments }}</h2>
+                <small class="text-warning">En desarrollo</small>
             </div>
         </div>
     </div>
@@ -51,15 +33,9 @@
     <div class="col-md-6 col-xl-3">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="text-muted">
-                    Realizadas
-                </h6>
-                <h2 class="mb-1">
-                    {{ completed_assignments }}
-                </h2>
-                <small class="text-success">
-                    Finalizadas
-                </small>
+                <h6 class="text-muted">Realizadas</h6>
+                <h2 class="mb-1">{{ completed_assignments }}</h2>
+                <small class="text-success">Finalizadas</small>
             </div>
         </div>
     </div>
@@ -72,15 +48,9 @@
     <div class="col-md-6 col-xl-3">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="text-muted">
-                    Aprobadas
-                </h6>
-                <h2 class="mb-1">
-                    {{ approved_assignments }}
-                </h2>
-                <small class="text-success">
-                    Con resultado aprobado
-                </small>
+                <h6 class="text-muted">Aprobadas</h6>
+                <h2 class="mb-1">{{ approved_assignments }}</h2>
+                <small class="text-success">Con resultado aprobado</small>
             </div>
         </div>
     </div>
@@ -88,15 +58,9 @@
     <div class="col-md-6 col-xl-3">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="text-muted">
-                    No aprobadas
-                </h6>
-                <h2 class="mb-1">
-                    {{ not_approved_assignments }}
-                </h2>
-                <small class="text-danger">
-                    Finalizadas sin aprobación
-                </small>
+                <h6 class="text-muted">No aprobadas</h6>
+                <h2 class="mb-1">{{ not_approved_assignments }}</h2>
+                <small class="text-danger">Finalizadas sin aprobación</small>
             </div>
         </div>
     </div>
@@ -104,9 +68,7 @@
     <div class="col-md-6 col-xl-3">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="text-muted">
-                    Promedio postest
-                </h6>
+                <h6 class="text-muted">Promedio postest</h6>
                 <h2 class="mb-1">
                     {% if posttest_average is not None %}
                         {{ posttest_average }} %
@@ -114,9 +76,7 @@
                         —
                     {% endif %}
                 </h2>
-                <small class="text-primary">
-                    Solo evaluaciones con postest
-                </small>
+                <small class="text-primary">Solo evaluaciones con postest</small>
             </div>
         </div>
     </div>
@@ -124,15 +84,9 @@
     <div class="col-md-6 col-xl-3">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="text-muted">
-                    Certificados
-                </h6>
-                <h2 class="mb-1">
-                    {{ certificates_count }}
-                </h2>
-                <small class="text-primary">
-                    Certificados activos
-                </small>
+                <h6 class="text-muted">Certificados</h6>
+                <h2 class="mb-1">{{ certificates_count }}</h2>
+                <small class="text-primary">Certificados activos</small>
             </div>
         </div>
     </div>
@@ -140,14 +94,12 @@
 </div>
 
 
-<div class="row g-4">
+<div class="row g-4 mb-5">
 
     <div class="col-md-6 col-xl-4">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="text-muted">
-                    Promedio pretest
-                </h6>
+                <h6 class="text-muted">Promedio pretest</h6>
                 <h2 class="mb-1">
                     {% if pretest_average is not None %}
                         {{ pretest_average }} %
@@ -155,9 +107,7 @@
                         —
                     {% endif %}
                 </h2>
-                <small class="text-muted">
-                    Solo capacitaciones con pretest
-                </small>
+                <small class="text-muted">Solo capacitaciones con pretest</small>
             </div>
         </div>
     </div>
@@ -165,9 +115,7 @@
     <div class="col-md-6 col-xl-4">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="text-muted">
-                    Mejora promedio
-                </h6>
+                <h6 class="text-muted">Mejora promedio</h6>
                 <h2 class="mb-1">
                     {% if improvement_average is not None %}
                         {% if improvement_average > 0 %}
@@ -180,9 +128,7 @@
                         —
                     {% endif %}
                 </h2>
-                <small class="text-success">
-                    Diferencia pretest - postest
-                </small>
+                <small class="text-success">Diferencia pretest - postest</small>
             </div>
         </div>
     </div>
@@ -190,16 +136,11 @@
     <div class="col-md-12 col-xl-4">
         <div class="card h-100 shadow-sm border-0">
             <div class="card-body d-flex flex-column">
-
-                <h6 class="text-muted">
-                    Acceso rápido
-                </h6>
-
+                <h6 class="text-muted">Acceso rápido</h6>
                 <p class="mb-3">
                     Consulta tus capacitaciones pendientes,
                     realizadas y certificados disponibles.
                 </p>
-
                 <div class="mt-auto">
                     <a
                         href="{% url 'my_trainings' %}"
@@ -208,9 +149,230 @@
                         Mis capacitaciones
                     </a>
                 </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row g-4">
+
+    <div class="col-xl-6">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0">
+                        Próximas capacitaciones
+                    </h5>
+                    <a
+                        href="{% url 'my_trainings' %}"
+                        class="btn btn-sm btn-outline-primary"
+                    >
+                        Ver todas
+                    </a>
+                </div>
+
+                {% if next_assignments %}
+
+                    <div class="list-group list-group-flush">
+
+                        {% for assignment in next_assignments %}
+
+                            <a
+                                href="{% url 'training_view' assignment.training_action.pk %}"
+                                class="list-group-item list-group-item-action px-0"
+                            >
+                                <div class="d-flex justify-content-between gap-3">
+
+                                    <div>
+                                        <strong>
+                                            {{ assignment.training_action.name }}
+                                        </strong>
+
+                                        <div class="text-muted small">
+                                            {{ assignment.training_action.code }}
+                                        </div>
+                                    </div>
+
+                                    <div class="text-end">
+
+                                        {% if assignment.status == "IN_PROGRESS" %}
+                                            <span class="badge bg-warning text-dark">
+                                                En progreso
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">
+                                                Pendiente
+                                            </span>
+                                        {% endif %}
+
+                                        {% if assignment.due_date %}
+                                            <div class="text-muted small mt-1">
+                                                Hasta {{ assignment.due_date|date:"d/m/Y" }}
+                                            </div>
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+                            </a>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="alert alert-light border mb-0">
+                        No tienes capacitaciones pendientes o en progreso.
+                    </div>
+
+                {% endif %}
 
             </div>
         </div>
+    </div>
+
+
+    <div class="col-xl-6">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="mb-0">
+                        Últimas capacitaciones realizadas
+                    </h5>
+                    <a
+                        href="{% url 'my_trainings' %}"
+                        class="btn btn-sm btn-outline-primary"
+                    >
+                        Ver historial
+                    </a>
+                </div>
+
+                {% if recent_completed %}
+
+                    <div class="list-group list-group-flush">
+
+                        {% for assignment in recent_completed %}
+
+                            <div class="list-group-item px-0">
+
+                                <div class="d-flex justify-content-between gap-3">
+
+                                    <div>
+                                        <strong>
+                                            {{ assignment.training_action.name }}
+                                        </strong>
+
+                                        <div class="text-muted small">
+                                            {{ assignment.training_action.code }}
+                                        </div>
+
+                                        {% if assignment.dashboard_result and assignment.dashboard_result.completed_at %}
+                                            <div class="text-muted small">
+                                                Finalizada:
+                                                {{ assignment.dashboard_result.completed_at|date:"d/m/Y" }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="text-end">
+
+                                        {% if assignment.status == "APPROVED" %}
+                                            <span class="badge bg-success">
+                                                Aprobada
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger">
+                                                No aprobada
+                                            </span>
+                                        {% endif %}
+
+                                        {% if assignment.dashboard_result and assignment.dashboard_result.posttest_score is not None %}
+                                            <div class="small mt-1">
+                                                Postest:
+                                                <strong>
+                                                    {{ assignment.dashboard_result.posttest_score }} %
+                                                </strong>
+                                            </div>
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="alert alert-light border mb-0">
+                        Todavía no tienes capacitaciones realizadas.
+                    </div>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="card shadow-sm border-0 mt-4">
+
+    <div class="card-body">
+
+        <h5 class="mb-3">
+            Certificados recientes
+        </h5>
+
+        {% if recent_certificates %}
+
+            <div class="row g-3">
+
+                {% for certificate in recent_certificates %}
+
+                    <div class="col-md-6 col-xl-4">
+                        <div class="border rounded p-3 h-100">
+
+                            <strong class="d-block mb-1">
+                                {{ certificate.assignment.training_action.name }}
+                            </strong>
+
+                            <div class="text-muted small mb-3">
+                                Emitido:
+                                {{ certificate.issued_at|date:"d/m/Y" }}
+                            </div>
+
+                            <a
+                                href="{% url 'certificate_view' certificate.pk %}"
+                                class="btn btn-sm btn-outline-success w-100"
+                            >
+                                Ver certificado
+                            </a>
+
+                        </div>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-light border mb-0">
+                Todavía no tienes certificados disponibles.
+            </div>
+
+        {% endif %}
+
     </div>
 
 </div>

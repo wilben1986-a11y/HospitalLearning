@@ -189,10 +189,70 @@ def home(request):
     if improvement_average is not None:
         improvement_average = round(improvement_average, 1)
 
-    certificates_count = Certificate.objects.filter(
-        assignment__user=request.user,
-        active=True,
-    ).count()
+    certificates_qs = (
+        Certificate.objects.filter(
+            assignment__user=request.user,
+            active=True,
+        )
+        .select_related(
+            "assignment",
+            "assignment__training_action",
+        )
+        .order_by("-issued_at")
+    )
+
+    certificates_count = certificates_qs.count()
+
+    next_assignments = (
+        assignments.filter(
+            status__in=[
+                "PENDING",
+                "IN_PROGRESS",
+            ],
+        )
+        .select_related(
+            "training_action",
+        )
+        .order_by(
+            "due_date",
+            "-assigned_at",
+        )[:5]
+    )
+
+    recent_completed = list(
+        assignments.filter(
+            status__in=[
+                "APPROVED",
+                "NOT_APPROVED",
+            ],
+        )
+        .select_related(
+            "training_action",
+        )
+        .order_by(
+            "-updated_at",
+        )[:5]
+    )
+
+    for assignment in recent_completed:
+        try:
+            assignment.dashboard_result = assignment.result
+        except TrainingResult.DoesNotExist:
+            assignment.dashboard_result = None
+
+    recent_completed.sort(
+        key=lambda assignment: (
+            assignment.dashboard_result.completed_at
+            if (
+                assignment.dashboard_result is not None
+                and assignment.dashboard_result.completed_at is not None
+            )
+            else assignment.updated_at
+        ),
+        reverse=True,
+    )
+
+    recent_certificates = certificates_qs[:5]
 
     context = {
         "dashboard_type": "participant",
@@ -206,6 +266,9 @@ def home(request):
         "posttest_average": posttest_average,
         "improvement_average": improvement_average,
         "certificates_count": certificates_count,
+        "next_assignments": next_assignments,
+        "recent_completed": recent_completed,
+        "recent_certificates": recent_certificates,
     }
 
     return render(
