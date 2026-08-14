@@ -105,6 +105,52 @@ def home(request):
         else:
             compliance_percentage = 0
 
+        institutional_results = TrainingResult.objects.filter(
+            assignment__training_action__institution=institution,
+        )
+
+        institutional_pretest_average = institutional_results.filter(
+            pretest_score__isnull=False,
+        ).aggregate(
+            average=Avg("pretest_score"),
+        )["average"]
+
+        institutional_posttest_average = institutional_results.filter(
+            posttest_score__isnull=False,
+        ).aggregate(
+            average=Avg("posttest_score"),
+        )["average"]
+
+        institutional_improvement_average = institutional_results.filter(
+            pretest_score__isnull=False,
+            posttest_score__isnull=False,
+        ).aggregate(
+            average=Avg("improvement_points"),
+        )["average"]
+
+        if institutional_pretest_average is not None:
+            institutional_pretest_average = round(
+                institutional_pretest_average,
+                1,
+            )
+
+        if institutional_posttest_average is not None:
+            institutional_posttest_average = round(
+                institutional_posttest_average,
+                1,
+            )
+
+        if institutional_improvement_average is not None:
+            institutional_improvement_average = round(
+                institutional_improvement_average,
+                1,
+            )
+
+        certificates_issued = Certificate.objects.filter(
+            assignment__training_action__institution=institution,
+            active=True,
+        ).count()
+
         context = {
             "dashboard_type": "institutional",
             "institution": institution,
@@ -117,6 +163,10 @@ def home(request):
             "in_progress_assignments": in_progress_assignments,
             "approved_assignments": approved_assignments,
             "not_approved_assignments": not_approved_assignments,
+            "institutional_pretest_average": institutional_pretest_average,
+            "institutional_posttest_average": institutional_posttest_average,
+            "institutional_improvement_average": institutional_improvement_average,
+            "certificates_issued": certificates_issued,
         }
 
         return render(
