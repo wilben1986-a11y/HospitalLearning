@@ -1,61 +1,158 @@
 <div class="row g-4 mb-4">
+
     <div class="col-md-6 col-xl-3">
-        <div class="card h-100 shadow-sm border-0"><div class="card-body">
-            <h6 class="text-muted">Participantes</h6>
-            <h2 class="mb-1">{{ total_participants }}</h2>
-            <small class="text-muted">Con capacitaciones asignadas</small>
-        </div></div>
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Participantes
+                </h6>
+
+                <h2 class="mb-1">
+                    {{ total_participants }}
+                </h2>
+
+                <small class="text-muted">
+                    Con capacitaciones asignadas
+                </small>
+            </div>
+        </div>
     </div>
+
+
     <div class="col-md-6 col-xl-3">
-        <div class="card h-100 shadow-sm border-0"><div class="card-body">
-            <h6 class="text-muted">Asignaciones</h6>
-            <h2 class="mb-1">{{ total_assignments }}</h2>
-            <small class="text-muted">Capacitaciones asignadas</small>
-        </div></div>
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Asignaciones
+                </h6>
+
+                <h2 class="mb-1">
+                    {{ total_assignments }}
+                </h2>
+
+                <small class="text-muted">
+                    Capacitaciones asignadas
+                </small>
+            </div>
+        </div>
     </div>
+
+
     <div class="col-md-6 col-xl-3">
-        <div class="card h-100 shadow-sm border-0"><div class="card-body">
-            <h6 class="text-muted">Completadas</h6>
-            <h2 class="mb-1">{{ completed_assignments }}</h2>
-            <small class="text-success">Finalizadas</small>
-        </div></div>
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Completadas
+                </h6>
+
+                <h2 class="mb-1">
+                    {{ completed_assignments }}
+                </h2>
+
+                <small class="text-success">
+                    Finalizadas
+                </small>
+            </div>
+        </div>
     </div>
+
+
     <div class="col-md-6 col-xl-3">
-        <div class="card h-100 shadow-sm border-0"><div class="card-body">
-            <h6 class="text-muted">Cumplimiento</h6>
-            <h2 class="mb-1">{{ compliance_percentage }} %</h2>
-            <small class="text-primary">Asignaciones completadas</small>
-        </div></div>
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Cumplimiento
+                </h6>
+
+                <h2 class="mb-1">
+                    {{ compliance_percentage }} %
+                </h2>
+
+                <small class="text-primary">
+                    Asignaciones completadas
+                </small>
+            </div>
+        </div>
     </div>
+
 </div>
 
+
 <div class="row g-4">
+
     <div class="col-md-6 col-xl-3">
-        <div class="card h-100 shadow-sm border-0"><div class="card-body">
-            <h6 class="text-muted">Pendientes</h6>
-            <h2 class="mb-1">{{ pending_assignments }}</h2>
-            <small class="text-muted">Aún no iniciadas</small>
-        </div></div>
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Pendientes
+                </h6>
+
+                <h2 class="mb-1">
+                    {{ pending_assignments }}
+                </h2>
+
+                <small class="text-muted">
+                    Aún no iniciadas
+                </small>
+            </div>
+        </div>
     </div>
+
+
     <div class="col-md-6 col-xl-3">
-        <div class="card h-100 shadow-sm border-0"><div class="card-body">
-            <h6 class="text-muted">En progreso</h6>
-            <h2 class="mb-1">{{ in_progress_assignments }}</h2>
-            <small class="text-warning">Actualmente en desarrollo</small>
-        </div></div>
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    En progreso
+                </h6>
+
+                <h2 class="mb-1">
+                    {{ in_progress_assignments }}
+                </h2>
+
+                <small class="text-warning">
+                    Actualmente en desarrollo
+                </small>
+            </div>
+        </div>
     </div>
+
+
     <div class="col-md-6 col-xl-3">
-        <div class="card h-100 shadow-sm border-0"><div class="card-body">
-            <h6 class="text-muted">Aprobadas</h6>
-            <h2 class="mb-1">{{ approved_assignments }}</h2>
-            <small class="text-success">Finalizadas con aprobación</small>
-        </div></div>
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Aprobadas
+                </h6>
+
+                <h2 class="mb-1">
+                    {{ approved_assignments }}
+                </h2>
+
+                <small class="text-success">
+                    Finalizadas con aprobación
+                </small>
+            </div>
+        </div>
     </div>
+
+
     <div class="col-md-6 col-xl-3">
-        <div class="card h-100 shadow-sm border-0"><div class="card-body">
-            <h6 class="text-muted">No aprobadas</h6>
-            <h2 class="mb-1">{{ not_approved_assignments }}</h2>
-            <small class="text-danger">Finalizadas sin aprobación</small>
-        </div></div>
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    No aprobadas
+                </h6>
+
+                <h2 class="mb-1">
+                    {{ not_approved_assignments }}
+                </h2>
+
+                <small class="text-danger">
+                    Finalizadas sin aprobación
+                </small>
+            </div>
+        </div>
     </div>
+
 </div>

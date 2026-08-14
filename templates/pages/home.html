@@ -4,37 +4,66 @@
 
 {% block content %}
 
-<div class="mb-4">
+{% if dashboard_type == "institutional" %}
 
-    <h2 class="mb-1">
-        Dashboard institucional
-    </h2>
+    <div class="mb-4">
+
+        <h2 class="mb-1">
+            Dashboard institucional
+        </h2>
+
+        {% if institution %}
+
+            <p class="text-muted mb-0">
+                {{ institution }}
+            </p>
+
+            <p class="text-muted small mb-0">
+                Seguimiento de las acciones de formación continua.
+            </p>
+
+        {% else %}
+
+            <div class="alert alert-warning mt-3 mb-0">
+                Tu usuario no tiene una institución activa asociada.
+                Los indicadores institucionales no están disponibles.
+            </div>
+
+        {% endif %}
+
+    </div>
 
     {% if institution %}
-
-        <p class="text-muted mb-0">
-            {{ institution }}
-        </p>
-
-        <p class="text-muted small mb-0">
-            Seguimiento de las acciones de formación continua.
-        </p>
-
-    {% else %}
-
-        <div class="alert alert-warning mt-3 mb-0">
-            Tu usuario no tiene una institución activa asociada.
-            Los indicadores institucionales no están disponibles.
-        </div>
-
+        {% include "components/stats_cards.html" %}
     {% endif %}
 
-</div>
 
+{% elif dashboard_type == "participant" %}
 
-{% if institution %}
+    <div class="mb-4">
 
-    {% include "components/stats_cards.html" %}
+        <h2 class="mb-1">
+            Mi dashboard
+        </h2>
+
+        <p class="text-muted mb-0">
+            Resumen personal de tus capacitaciones, resultados y certificados.
+        </p>
+
+    </div>
+
+    {% include "components/participant_stats_cards.html" %}
+
+    <div class="mt-4">
+
+        <a
+            href="{% url 'my_trainings' %}"
+            class="btn btn-primary"
+        >
+            Ver mis capacitaciones
+        </a>
+
+    </div>
 
 {% endif %}
 

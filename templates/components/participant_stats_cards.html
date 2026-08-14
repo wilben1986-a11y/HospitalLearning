@@ -1,0 +1,216 @@
+<div class="row g-4 mb-4">
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Asignadas
+                </h6>
+                <h2 class="mb-1">
+                    {{ total_assignments }}
+                </h2>
+                <small class="text-muted">
+                    Capacitaciones recibidas
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Pendientes
+                </h6>
+                <h2 class="mb-1">
+                    {{ pending_assignments }}
+                </h2>
+                <small class="text-muted">
+                    Aún no iniciadas
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    En progreso
+                </h6>
+                <h2 class="mb-1">
+                    {{ in_progress_assignments }}
+                </h2>
+                <small class="text-warning">
+                    En desarrollo
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Realizadas
+                </h6>
+                <h2 class="mb-1">
+                    {{ completed_assignments }}
+                </h2>
+                <small class="text-success">
+                    Finalizadas
+                </small>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Aprobadas
+                </h6>
+                <h2 class="mb-1">
+                    {{ approved_assignments }}
+                </h2>
+                <small class="text-success">
+                    Con resultado aprobado
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    No aprobadas
+                </h6>
+                <h2 class="mb-1">
+                    {{ not_approved_assignments }}
+                </h2>
+                <small class="text-danger">
+                    Finalizadas sin aprobación
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Promedio postest
+                </h6>
+                <h2 class="mb-1">
+                    {% if posttest_average is not None %}
+                        {{ posttest_average }} %
+                    {% else %}
+                        —
+                    {% endif %}
+                </h2>
+                <small class="text-primary">
+                    Solo evaluaciones con postest
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Certificados
+                </h6>
+                <h2 class="mb-1">
+                    {{ certificates_count }}
+                </h2>
+                <small class="text-primary">
+                    Certificados activos
+                </small>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row g-4">
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Promedio pretest
+                </h6>
+                <h2 class="mb-1">
+                    {% if pretest_average is not None %}
+                        {{ pretest_average }} %
+                    {% else %}
+                        —
+                    {% endif %}
+                </h2>
+                <small class="text-muted">
+                    Solo capacitaciones con pretest
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    Mejora promedio
+                </h6>
+                <h2 class="mb-1">
+                    {% if improvement_average is not None %}
+                        {% if improvement_average > 0 %}
+                            +{{ improvement_average }}
+                        {% else %}
+                            {{ improvement_average }}
+                        {% endif %}
+                        puntos
+                    {% else %}
+                        —
+                    {% endif %}
+                </h2>
+                <small class="text-success">
+                    Diferencia pretest - postest
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 col-xl-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body d-flex flex-column">
+
+                <h6 class="text-muted">
+                    Acceso rápido
+                </h6>
+
+                <p class="mb-3">
+                    Consulta tus capacitaciones pendientes,
+                    realizadas y certificados disponibles.
+                </p>
+
+                <div class="mt-auto">
+                    <a
+                        href="{% url 'my_trainings' %}"
+                        class="btn btn-outline-primary w-100"
+                    >
+                        Mis capacitaciones
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

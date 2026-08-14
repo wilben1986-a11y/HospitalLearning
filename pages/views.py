@@ -3,6 +3,7 @@ from io import BytesIO
 from pathlib import Path
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
@@ -30,67 +31,181 @@ from training.models import (
 @login_required
 def home(request):
     """
-    Dashboard institucional de HospitalLearning.
+    Página inicial de HospitalLearning.
 
-    Los indicadores se calculan únicamente con las asignaciones
-    pertenecientes a la institución activa del usuario autenticado.
+    - Administradores y usuarios staff:
+      Dashboard institucional filtrado por la IPS activa.
+    - Participantes:
+      Dashboard personal con sus propias capacitaciones,
+      resultados y certificados.
     """
 
-    institutional_link = (
-        InstitutionalLink.objects.filter(
-            user=request.user,
-            active=True,
+    # ==================================================
+    # DASHBOARD INSTITUCIONAL
+    # ==================================================
+
+    if request.user.is_staff or request.user.is_superuser:
+
+        institutional_link = (
+            InstitutionalLink.objects.filter(
+                user=request.user,
+                active=True,
+            )
+            .select_related("institution")
+            .order_by("id")
+            .first()
         )
-        .select_related("institution")
-        .order_by("id")
-        .first()
-    )
 
-    institution = (
-        institutional_link.institution
-        if institutional_link is not None
-        else None
-    )
-
-    if institution is not None:
-        assignments = TrainingAssignment.objects.filter(
-            training_action__institution=institution,
+        institution = (
+            institutional_link.institution
+            if institutional_link is not None
+            else None
         )
-    else:
-        assignments = TrainingAssignment.objects.none()
 
-    total_participants = (
-        assignments.values("user_id")
-        .distinct()
-        .count()
+        if institution is not None:
+            assignments = TrainingAssignment.objects.filter(
+                training_action__institution=institution,
+            )
+        else:
+            assignments = TrainingAssignment.objects.none()
+
+        total_participants = (
+            assignments.values("user_id")
+            .distinct()
+            .count()
+        )
+
+        total_assignments = assignments.count()
+
+        pending_assignments = assignments.filter(
+            status="PENDING",
+        ).count()
+
+        in_progress_assignments = assignments.filter(
+            status="IN_PROGRESS",
+        ).count()
+
+        approved_assignments = assignments.filter(
+            status="APPROVED",
+        ).count()
+
+        not_approved_assignments = assignments.filter(
+            status="NOT_APPROVED",
+        ).count()
+
+        completed_assignments = (
+            approved_assignments + not_approved_assignments
+        )
+
+        if total_assignments > 0:
+            compliance_percentage = round(
+                (completed_assignments / total_assignments) * 100,
+                1,
+            )
+        else:
+            compliance_percentage = 0
+
+        context = {
+            "dashboard_type": "institutional",
+            "institution": institution,
+            "institutional_link": institutional_link,
+            "total_participants": total_participants,
+            "total_assignments": total_assignments,
+            "completed_assignments": completed_assignments,
+            "compliance_percentage": compliance_percentage,
+            "pending_assignments": pending_assignments,
+            "in_progress_assignments": in_progress_assignments,
+            "approved_assignments": approved_assignments,
+            "not_approved_assignments": not_approved_assignments,
+        }
+
+        return render(
+            request,
+            "pages/home.html",
+            context,
+        )
+
+    # ==================================================
+    # DASHBOARD PERSONAL DEL PARTICIPANTE
+    # ==================================================
+
+    assignments = TrainingAssignment.objects.filter(
+        user=request.user,
+        training_action__active=True,
+        training_action__status="PUBLISHED",
     )
 
     total_assignments = assignments.count()
-    pending_assignments = assignments.filter(status="PENDING").count()
-    in_progress_assignments = assignments.filter(status="IN_PROGRESS").count()
-    approved_assignments = assignments.filter(status="APPROVED").count()
-    not_approved_assignments = assignments.filter(status="NOT_APPROVED").count()
-    completed_assignments = approved_assignments + not_approved_assignments
 
-    if total_assignments > 0:
-        compliance_percentage = round(
-            (completed_assignments / total_assignments) * 100,
-            1,
-        )
-    else:
-        compliance_percentage = 0
+    pending_assignments = assignments.filter(
+        status="PENDING",
+    ).count()
+
+    in_progress_assignments = assignments.filter(
+        status="IN_PROGRESS",
+    ).count()
+
+    approved_assignments = assignments.filter(
+        status="APPROVED",
+    ).count()
+
+    not_approved_assignments = assignments.filter(
+        status="NOT_APPROVED",
+    ).count()
+
+    completed_assignments = (
+        approved_assignments + not_approved_assignments
+    )
+
+    results = TrainingResult.objects.filter(
+        assignment__user=request.user,
+    )
+
+    pretest_average = results.filter(
+        pretest_score__isnull=False,
+    ).aggregate(
+        average=Avg("pretest_score"),
+    )["average"]
+
+    posttest_average = results.filter(
+        posttest_score__isnull=False,
+    ).aggregate(
+        average=Avg("posttest_score"),
+    )["average"]
+
+    improvement_average = results.filter(
+        pretest_score__isnull=False,
+        posttest_score__isnull=False,
+    ).aggregate(
+        average=Avg("improvement_points"),
+    )["average"]
+
+    if pretest_average is not None:
+        pretest_average = round(pretest_average, 1)
+
+    if posttest_average is not None:
+        posttest_average = round(posttest_average, 1)
+
+    if improvement_average is not None:
+        improvement_average = round(improvement_average, 1)
+
+    certificates_count = Certificate.objects.filter(
+        assignment__user=request.user,
+        active=True,
+    ).count()
 
     context = {
-        "institution": institution,
-        "institutional_link": institutional_link,
-        "total_participants": total_participants,
+        "dashboard_type": "participant",
         "total_assignments": total_assignments,
-        "completed_assignments": completed_assignments,
-        "compliance_percentage": compliance_percentage,
         "pending_assignments": pending_assignments,
         "in_progress_assignments": in_progress_assignments,
+        "completed_assignments": completed_assignments,
         "approved_assignments": approved_assignments,
         "not_approved_assignments": not_approved_assignments,
+        "pretest_average": pretest_average,
+        "posttest_average": posttest_average,
+        "improvement_average": improvement_average,
+        "certificates_count": certificates_count,
     }
 
     return render(
