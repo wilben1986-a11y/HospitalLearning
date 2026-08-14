@@ -70,6 +70,8 @@ Actualmente existen los modelos:
 
 La arquitectura permite relacionar usuarios con instituciones y gestionar su vinculación institucional.
 
+Se ha validado inicialmente la vinculación de usuarios con una institución activa y el uso de esta relación para limitar los indicadores institucionales a la IPS correspondiente.
+
 ## Pendiente
 
 - Completar pruebas funcionales de administración de servicios.
@@ -152,6 +154,17 @@ El sistema permite registrar:
 - Estado de aprobación.
 - Fecha de finalización.
 
+Los resultados ya son utilizados por:
+
+- El seguimiento individual del participante.
+- El Dashboard personal.
+- Los indicadores de aprobación.
+- Los promedios de pretest.
+- Los promedios de postest.
+- El cálculo de mejora del aprendizaje.
+
+El sistema maneja capacitaciones que pueden finalizar sin disponer necesariamente de resultados de pretest o postest, evitando interpretar la ausencia de resultado como una calificación de cero.
+
 ## Pendiente
 
 El modelo de datos contempla una arquitectura más amplia que todavía no está implementada completamente:
@@ -184,6 +197,34 @@ El participante puede consultar:
 
 El sistema conserva el progreso cuando el participante abandona una capacitación y permite retomarla posteriormente.
 
+Además, se encuentra implementado un Dashboard personal del participante.
+
+## Dashboard personal del participante
+
+El Dashboard permite visualizar:
+
+- Total de capacitaciones asignadas.
+- Capacitaciones pendientes.
+- Capacitaciones en progreso.
+- Capacitaciones realizadas.
+- Capacitaciones aprobadas.
+- Capacitaciones no aprobadas.
+- Promedio de resultados del pretest.
+- Promedio de resultados del postest.
+- Mejora promedio.
+- Número de certificados activos.
+
+También permite consultar:
+
+- Próximas capacitaciones pendientes o en progreso.
+- Últimas capacitaciones realizadas.
+- Resultado del postest cuando existe.
+- Certificados recientes.
+- Acceso directo a Mis capacitaciones.
+- Acceso directo a certificados disponibles.
+
+Los promedios se calculan únicamente con evaluaciones que contienen resultados válidos.
+
 ---
 
 # 7. Certificados
@@ -206,6 +247,7 @@ El sistema permite:
 - Generación de certificado en PDF.
 - Descarga directa del PDF.
 - Restricción de acceso al certificado al usuario correspondiente.
+- Visualización de certificados recientes desde el Dashboard del participante.
 
 ## Mejoras futuras
 
@@ -278,26 +320,47 @@ Deberá permitir:
 
 ## Estado: 🟡 EN DESARROLLO
 
-Existe estructura inicial para el dashboard.
+HospitalLearning dispone actualmente de dos tipos de Dashboard:
 
-El siguiente desarrollo deberá aprovechar los datos que HospitalLearning ya genera para presentar indicadores institucionales.
+1. Dashboard institucional.
+2. Dashboard personal del participante.
 
-Indicadores iniciales propuestos:
+La visualización se determina según el perfil del usuario autenticado.
 
-- Usuarios registrados.
-- Usuarios activos.
-- Capacitaciones publicadas.
-- Capacitaciones asignadas.
+---
+
+## 11.1 Dashboard institucional
+
+El Dashboard institucional utiliza la institución activa asociada al usuario administrador.
+
+Los indicadores se calculan utilizando únicamente las asignaciones correspondientes a la IPS activa.
+
+Actualmente permite visualizar:
+
+- Total de participantes con capacitaciones asignadas.
+- Total de capacitaciones asignadas.
+- Capacitaciones completadas.
+- Porcentaje de cumplimiento.
 - Capacitaciones pendientes.
 - Capacitaciones en progreso.
-- Capacitaciones completadas.
 - Capacitaciones aprobadas.
 - Capacitaciones no aprobadas.
-- Porcentaje de cumplimiento.
-- Resultados de evaluaciones.
-- Certificados emitidos.
 
-Posteriormente podrán incorporarse filtros por:
+El porcentaje de cumplimiento se calcula a partir de las asignaciones finalizadas respecto del total de asignaciones.
+
+### Pendiente para Dashboard institucional v2
+
+Incorporar:
+
+- Resultados de evaluaciones.
+- Promedio institucional de pretest.
+- Promedio institucional de postest.
+- Mejora promedio.
+- Número de certificados emitidos.
+- Información resumida de acciones de formación.
+- Información resumida de participantes.
+
+Posteriormente incorporar filtros por:
 
 - Institución.
 - Acción de formación.
@@ -306,6 +369,30 @@ Posteriormente podrán incorporarse filtros por:
 - Servicio.
 - Estado.
 - Período.
+
+---
+
+## 11.2 Dashboard personal del participante
+
+El Dashboard personal se encuentra funcional.
+
+Permite visualizar:
+
+- Capacitaciones asignadas.
+- Capacitaciones pendientes.
+- Capacitaciones en progreso.
+- Capacitaciones realizadas.
+- Capacitaciones aprobadas.
+- Capacitaciones no aprobadas.
+- Promedio pretest.
+- Promedio postest.
+- Mejora promedio.
+- Certificados activos.
+- Próximas capacitaciones.
+- Últimas capacitaciones realizadas.
+- Certificados recientes.
+
+El participante puede acceder desde el Dashboard a sus capacitaciones y certificados.
 
 ---
 
@@ -333,6 +420,8 @@ Reportes previstos:
 
 - Excel.
 - PDF.
+
+El desarrollo de reportes institucionales comenzará después de consolidar el Dashboard institucional y sus indicadores principales.
 
 ---
 
@@ -363,7 +452,7 @@ Antes del despliegue deberán revisarse:
 
 | Documento | Estado |
 | --- | --- |
-| 00 roadmap.md | 🟡 Requiere actualización periódica |
+| 00_ROADMAP.md | 🟡 Requiere actualización periódica |
 | 01_vision_del_proyecto.md | ✅ Elaborado |
 | 02_modelo_funcional.md | ✅ Elaborado |
 | 03_modelo_de_datos.md | 🟡 Requiere depuración y actualización |
@@ -411,21 +500,22 @@ La arquitectura deberá permitir el uso de HospitalLearning por múltiples Insti
 
 # PRÓXIMO OBJETIVO
 
-## Dashboard institucional e indicadores
+## Dashboard institucional v2
 
-Construir el primer dashboard funcional utilizando los datos que HospitalLearning ya registra.
+Completar los indicadores institucionales utilizando los datos que HospitalLearning ya registra.
 
-El dashboard deberá permitir inicialmente visualizar:
+El siguiente desarrollo deberá incorporar:
 
-1. Total de participantes.
-2. Capacitaciones asignadas.
-3. Capacitaciones pendientes.
-4. Capacitaciones en progreso.
-5. Capacitaciones completadas.
-6. Capacitaciones aprobadas.
-7. Capacitaciones no aprobadas.
-8. Porcentaje de cumplimiento.
-9. Resultados de evaluación.
-10. Certificados emitidos.
+1. Resultados de evaluación.
+2. Promedio institucional de pretest.
+3. Promedio institucional de postest.
+4. Mejora promedio de los participantes.
+5. Certificados emitidos.
 
-Una vez construido y validado el dashboard inicial, se continuará con los reportes institucionales.
+Una vez implementados y validados estos indicadores se continuará con:
+
+6. Resumen por acción de formación.
+7. Resumen de participantes.
+8. Filtros institucionales.
+
+Posteriormente se iniciará el desarrollo del módulo de reportes institucionales.
