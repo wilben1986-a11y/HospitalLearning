@@ -34,7 +34,13 @@
     </div>
 
     {% if institution %}
+
         {% include "components/stats_cards.html" %}
+
+        <div class="mt-5">
+            {% include "components/institutional_training_summary.html" %}
+        </div>
+
     {% endif %}
 
 

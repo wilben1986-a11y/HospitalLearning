@@ -1,0 +1,122 @@
+<div class="card shadow-sm border-0">
+
+    <div class="card-body">
+
+        <div class="mb-4">
+            <h4 class="mb-1">
+                Resumen por acción de formación
+            </h4>
+
+            <p class="text-muted mb-0">
+                Seguimiento de asignaciones, cumplimiento, resultados y certificados.
+            </p>
+        </div>
+
+        {% if training_summary %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Capacitación</th>
+                            <th>Código</th>
+                            <th>Tipo</th>
+                            <th class="text-center">Asignados</th>
+                            <th class="text-center">Pendientes</th>
+                            <th class="text-center">En progreso</th>
+                            <th class="text-center">Completados</th>
+                            <th class="text-center">Aprobados</th>
+                            <th class="text-center">No aprobados</th>
+                            <th class="text-center">Cumplimiento</th>
+                            <th class="text-center">Prom. postest</th>
+                            <th class="text-center">Certificados</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in training_summary %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        {{ item.training_action.name }}
+                                    </strong>
+
+                                    <div class="text-muted small">
+                                        Versión {{ item.training_action.version }}
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {{ item.training_action.code }}
+                                </td>
+
+                                <td>
+                                    {{ item.training_action.action_type.name }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.assigned }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.pending }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.in_progress }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.completed }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.approved }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.not_approved }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.compliance }} %
+                                </td>
+
+                                <td class="text-center">
+                                    {% if item.posttest_average is not None %}
+                                        {{ item.posttest_average }} %
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.certificates }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-light border mb-0">
+                No hay acciones de formación activas para esta institución.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>

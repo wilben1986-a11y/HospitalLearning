@@ -151,6 +151,74 @@ def home(request):
             active=True,
         ).count()
 
+        training_actions = (
+            TrainingAction.objects.filter(
+                institution=institution,
+                active=True,
+            )
+            .select_related("action_type")
+            .order_by("name")
+        )
+
+        training_summary = []
+
+        for training_action in training_actions:
+
+            action_assignments = assignments.filter(
+                training_action=training_action,
+            )
+
+            action_total = action_assignments.count()
+            action_pending = action_assignments.filter(status="PENDING").count()
+            action_in_progress = action_assignments.filter(status="IN_PROGRESS").count()
+            action_approved = action_assignments.filter(status="APPROVED").count()
+            action_not_approved = action_assignments.filter(status="NOT_APPROVED").count()
+            action_completed = action_approved + action_not_approved
+
+            if action_total > 0:
+                action_compliance = round(
+                    (action_completed / action_total) * 100,
+                    1,
+                )
+            else:
+                action_compliance = 0
+
+            action_posttest_average = (
+                TrainingResult.objects.filter(
+                    assignment__training_action=training_action,
+                    posttest_score__isnull=False,
+                )
+                .aggregate(
+                    average=Avg("posttest_score"),
+                )["average"]
+            )
+
+            if action_posttest_average is not None:
+                action_posttest_average = round(
+                    action_posttest_average,
+                    1,
+                )
+
+            action_certificates = Certificate.objects.filter(
+                assignment__training_action=training_action,
+                active=True,
+            ).count()
+
+            training_summary.append(
+                {
+                    "training_action": training_action,
+                    "assigned": action_total,
+                    "pending": action_pending,
+                    "in_progress": action_in_progress,
+                    "completed": action_completed,
+                    "approved": action_approved,
+                    "not_approved": action_not_approved,
+                    "compliance": action_compliance,
+                    "posttest_average": action_posttest_average,
+                    "certificates": action_certificates,
+                }
+            )
+
         context = {
             "dashboard_type": "institutional",
             "institution": institution,
@@ -167,6 +235,7 @@ def home(request):
             "institutional_posttest_average": institutional_posttest_average,
             "institutional_improvement_average": institutional_improvement_average,
             "certificates_issued": certificates_issued,
+            "training_summary": training_summary,
         }
 
         return render(
