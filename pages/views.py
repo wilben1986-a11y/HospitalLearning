@@ -19,6 +19,7 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
 
 from certificates.models import Certificate
+from users.models import InstitutionalLink
 from training.models import (
     TrainingAction,
     TrainingAssignment,
@@ -29,19 +30,41 @@ from training.models import (
 @login_required
 def home(request):
     """
-    Dashboard principal de HospitalLearning.
+    Dashboard institucional de HospitalLearning.
 
-    Esta versión muestra indicadores globales del sistema.
-    Posteriormente los indicadores se filtrarán por institución.
+    Los indicadores se calculan únicamente con las asignaciones
+    pertenecientes a la institución activa del usuario autenticado.
     """
 
-    assignments = TrainingAssignment.objects.all()
+    institutional_link = (
+        InstitutionalLink.objects.filter(
+            user=request.user,
+            active=True,
+        )
+        .select_related("institution")
+        .order_by("id")
+        .first()
+    )
+
+    institution = (
+        institutional_link.institution
+        if institutional_link is not None
+        else None
+    )
+
+    if institution is not None:
+        assignments = TrainingAssignment.objects.filter(
+            training_action__institution=institution,
+        )
+    else:
+        assignments = TrainingAssignment.objects.none()
 
     total_participants = (
         assignments.values("user_id")
         .distinct()
         .count()
     )
+
     total_assignments = assignments.count()
     pending_assignments = assignments.filter(status="PENDING").count()
     in_progress_assignments = assignments.filter(status="IN_PROGRESS").count()
@@ -58,6 +81,8 @@ def home(request):
         compliance_percentage = 0
 
     context = {
+        "institution": institution,
+        "institutional_link": institutional_link,
         "total_participants": total_participants,
         "total_assignments": total_assignments,
         "completed_assignments": completed_assignments,
@@ -68,8 +93,11 @@ def home(request):
         "not_approved_assignments": not_approved_assignments,
     }
 
-    return render(request, "pages/home.html", context)
-
+    return render(
+        request,
+        "pages/home.html",
+        context,
+    )
 
 @login_required
 def my_trainings(request):

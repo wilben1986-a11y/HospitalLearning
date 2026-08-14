@@ -5,12 +5,37 @@
 {% block content %}
 
 <div class="mb-4">
-    <h2 class="mb-1">Dashboard institucional</h2>
-    <p class="text-muted mb-0">
-        Seguimiento general de las acciones de formación continua.
-    </p>
+
+    <h2 class="mb-1">
+        Dashboard institucional
+    </h2>
+
+    {% if institution %}
+
+        <p class="text-muted mb-0">
+            {{ institution }}
+        </p>
+
+        <p class="text-muted small mb-0">
+            Seguimiento de las acciones de formación continua.
+        </p>
+
+    {% else %}
+
+        <div class="alert alert-warning mt-3 mb-0">
+            Tu usuario no tiene una institución activa asociada.
+            Los indicadores institucionales no están disponibles.
+        </div>
+
+    {% endif %}
+
 </div>
 
-{% include "components/stats_cards.html" %}
+
+{% if institution %}
+
+    {% include "components/stats_cards.html" %}
+
+{% endif %}
 
 {% endblock %}
