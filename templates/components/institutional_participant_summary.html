@@ -1,0 +1,119 @@
+<div class="card shadow-sm border-0">
+
+    <div class="card-body">
+
+        <div class="mb-4">
+            <h4 class="mb-1">
+                Resumen de participantes
+            </h4>
+
+            <p class="text-muted mb-0">
+                Seguimiento individual de las capacitaciones asignadas en la institución.
+            </p>
+        </div>
+
+        {% if participant_summary %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Participante</th>
+                            <th>Documento</th>
+                            <th>Profesión</th>
+                            <th class="text-center">Asignadas</th>
+                            <th class="text-center">Pendientes</th>
+                            <th class="text-center">En progreso</th>
+                            <th class="text-center">Completadas</th>
+                            <th class="text-center">Aprobadas</th>
+                            <th class="text-center">No aprobadas</th>
+                            <th class="text-center">Cumplimiento</th>
+                            <th class="text-center">Prom. postest</th>
+                            <th class="text-center">Certificados</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in participant_summary %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>{{ item.name }}</strong>
+
+                                    <div class="text-muted small">
+                                        {{ item.username }}
+                                        {% if item.is_administrative %}
+                                            · Administrativo
+                                        {% endif %}
+                                    </div>
+                                </td>
+
+                                <td>{{ item.document }}</td>
+
+                                <td>{{ item.profession }}</td>
+
+                                <td class="text-center">
+                                    {{ item.assigned }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.pending }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.in_progress }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.completed }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.approved }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.not_approved }}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.compliance }} %
+                                </td>
+
+                                <td class="text-center">
+                                    {% if item.posttest_average is not None %}
+                                        {{ item.posttest_average }} %
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <td class="text-center">
+                                    {{ item.certificates }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="alert alert-light border mb-0">
+                No hay participantes con capacitaciones asignadas en esta institución.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>

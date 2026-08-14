@@ -219,6 +219,135 @@ def home(request):
                 }
             )
 
+        participant_ids = (
+            assignments.values_list("user_id", flat=True)
+            .distinct()
+        )
+
+        participant_links = (
+            InstitutionalLink.objects.filter(
+                institution=institution,
+                active=True,
+                user_id__in=participant_ids,
+            )
+            .select_related("user")
+            .order_by(
+                "user__first_name",
+                "user__last_name",
+                "user__username",
+            )
+        )
+
+        participant_summary = []
+
+        for participant_link in participant_links:
+
+            participant = participant_link.user
+
+            participant_assignments = assignments.filter(
+                user=participant,
+            )
+
+            participant_total = participant_assignments.count()
+
+            participant_pending = participant_assignments.filter(
+                status="PENDING",
+            ).count()
+
+            participant_in_progress = participant_assignments.filter(
+                status="IN_PROGRESS",
+            ).count()
+
+            participant_approved = participant_assignments.filter(
+                status="APPROVED",
+            ).count()
+
+            participant_not_approved = participant_assignments.filter(
+                status="NOT_APPROVED",
+            ).count()
+
+            participant_completed = (
+                participant_approved
+                + participant_not_approved
+            )
+
+            if participant_total > 0:
+                participant_compliance = round(
+                    (
+                        participant_completed
+                        / participant_total
+                    )
+                    * 100,
+                    1,
+                )
+            else:
+                participant_compliance = 0
+
+            participant_posttest_average = (
+                TrainingResult.objects.filter(
+                    assignment__training_action__institution=institution,
+                    assignment__user=participant,
+                    posttest_score__isnull=False,
+                )
+                .aggregate(
+                    average=Avg("posttest_score"),
+                )["average"]
+            )
+
+            if participant_posttest_average is not None:
+                participant_posttest_average = round(
+                    participant_posttest_average,
+                    1,
+                )
+
+            participant_certificates = (
+                Certificate.objects.filter(
+                    assignment__training_action__institution=institution,
+                    assignment__user=participant,
+                    active=True,
+                ).count()
+            )
+
+            participant_name = (
+                participant.get_full_name().strip()
+                or participant.username
+            )
+
+            document = "—"
+
+            if participant.document_number:
+                if participant.document_type:
+                    document = (
+                        f"{participant.document_type} "
+                        f"{participant.document_number}"
+                    )
+                else:
+                    document = participant.document_number
+
+            profession = participant.profession or "—"
+
+            participant_summary.append(
+                {
+                    "name": participant_name,
+                    "username": participant.username,
+                    "document": document,
+                    "profession": profession,
+                    "is_administrative": (
+                        participant.is_staff
+                        or participant.is_superuser
+                    ),
+                    "assigned": participant_total,
+                    "pending": participant_pending,
+                    "in_progress": participant_in_progress,
+                    "completed": participant_completed,
+                    "approved": participant_approved,
+                    "not_approved": participant_not_approved,
+                    "compliance": participant_compliance,
+                    "posttest_average": participant_posttest_average,
+                    "certificates": participant_certificates,
+                }
+            )
+
         context = {
             "dashboard_type": "institutional",
             "institution": institution,
@@ -236,6 +365,7 @@ def home(request):
             "institutional_improvement_average": institutional_improvement_average,
             "certificates_issued": certificates_issued,
             "training_summary": training_summary,
+            "participant_summary": participant_summary,
         }
 
         return render(
