@@ -82,6 +82,17 @@ def home(request):
                 .order_by("name")
             )
 
+            available_professions = list(
+                InstitutionalLink.objects.filter(
+                    institution=institution,
+                    active=True,
+                )
+                .exclude(user__profession="")
+                .values_list("user__profession", flat=True)
+                .distinct()
+                .order_by("user__profession")
+            )
+
             selected_training_action_id = request.GET.get(
                 "training_action",
                 "",
@@ -92,12 +103,25 @@ def home(request):
                 "",
             ).strip()
 
+            selected_profession = request.GET.get(
+                "profession",
+                "",
+            ).strip()
+
             selected_training_action = None
             selected_action_type = None
 
             assignments = TrainingAssignment.objects.filter(
                 training_action__institution=institution,
             )
+
+            if selected_profession:
+                if selected_profession not in available_professions:
+                    selected_profession = ""
+                else:
+                    assignments = assignments.filter(
+                        user__profession=selected_profession,
+                    )
 
             if selected_action_type_id:
                 try:
@@ -140,8 +164,10 @@ def home(request):
         else:
             available_training_actions = TrainingAction.objects.none()
             available_action_types = ActionType.objects.none()
+            available_professions = []
             selected_training_action_id = ""
             selected_action_type_id = ""
+            selected_profession = ""
             selected_training_action = None
             selected_action_type = None
             assignments = TrainingAssignment.objects.none()
@@ -446,10 +472,12 @@ def home(request):
             "participant_summary": participant_summary,
             "available_training_actions": available_training_actions,
             "available_action_types": available_action_types,
+            "available_professions": available_professions,
             "selected_training_action_id": selected_training_action_id,
             "selected_training_action": selected_training_action,
             "selected_action_type_id": selected_action_type_id,
             "selected_action_type": selected_action_type,
+            "selected_profession": selected_profession,
         }
 
         return render(
