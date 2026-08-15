@@ -35,6 +35,80 @@
 
     {% if institution %}
 
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+
+                <form method="get" class="row g-3 align-items-end">
+
+                    <div class="col-md-8 col-lg-6">
+                        <label
+                            for="training_action"
+                            class="form-label"
+                        >
+                            Acción de formación
+                        </label>
+
+                        <select
+                            id="training_action"
+                            name="training_action"
+                            class="form-select"
+                        >
+                            <option value="">
+                                Todas las capacitaciones
+                            </option>
+
+                            {% for training_action in available_training_actions %}
+                                <option
+                                    value="{{ training_action.id }}"
+                                    {% if selected_training_action_id == training_action.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ training_action.code }} - {{ training_action.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-auto">
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            Aplicar filtro
+                        </button>
+                    </div>
+
+                    {% if selected_training_action %}
+                        <div class="col-auto">
+                            <a
+                                href="{% url 'home' %}"
+                                class="btn btn-outline-secondary"
+                            >
+                                Limpiar filtro
+                            </a>
+                        </div>
+                    {% endif %}
+
+                </form>
+
+                {% if selected_training_action %}
+                    <div class="mt-3">
+                        <span class="badge bg-primary">
+                            Filtro activo
+                        </span>
+
+                        <span class="ms-2">
+                            {{ selected_training_action.code }}
+                            -
+                            {{ selected_training_action.name }}
+                        </span>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
         {% include "components/stats_cards.html" %}
 
         <div class="mt-5">

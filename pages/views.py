@@ -63,10 +63,49 @@ def home(request):
         )
 
         if institution is not None:
+            available_training_actions = (
+                TrainingAction.objects.filter(
+                    institution=institution,
+                    active=True,
+                )
+                .select_related("action_type")
+                .order_by("name")
+            )
+
+            selected_training_action_id = request.GET.get(
+                "training_action",
+                "",
+            ).strip()
+
+            selected_training_action = None
+
             assignments = TrainingAssignment.objects.filter(
                 training_action__institution=institution,
             )
+
+            if selected_training_action_id:
+                try:
+                    selected_training_action = (
+                        available_training_actions.get(
+                            pk=selected_training_action_id,
+                        )
+                    )
+                except (
+                    TrainingAction.DoesNotExist,
+                    ValueError,
+                    TypeError,
+                ):
+                    selected_training_action_id = ""
+                    selected_training_action = None
+                else:
+                    assignments = assignments.filter(
+                        training_action=selected_training_action,
+                    )
+
         else:
+            available_training_actions = TrainingAction.objects.none()
+            selected_training_action_id = ""
+            selected_training_action = None
             assignments = TrainingAssignment.objects.none()
 
         total_participants = (
@@ -106,7 +145,7 @@ def home(request):
             compliance_percentage = 0
 
         institutional_results = TrainingResult.objects.filter(
-            assignment__training_action__institution=institution,
+            assignment__in=assignments,
         )
 
         institutional_pretest_average = institutional_results.filter(
@@ -147,18 +186,16 @@ def home(request):
             )
 
         certificates_issued = Certificate.objects.filter(
-            assignment__training_action__institution=institution,
+            assignment__in=assignments,
             active=True,
         ).count()
 
-        training_actions = (
-            TrainingAction.objects.filter(
-                institution=institution,
-                active=True,
+        if selected_training_action is not None:
+            training_actions = available_training_actions.filter(
+                pk=selected_training_action.pk,
             )
-            .select_related("action_type")
-            .order_by("name")
-        )
+        else:
+            training_actions = available_training_actions
 
         training_summary = []
 
@@ -185,7 +222,7 @@ def home(request):
 
             action_posttest_average = (
                 TrainingResult.objects.filter(
-                    assignment__training_action=training_action,
+                    assignment__in=action_assignments,
                     posttest_score__isnull=False,
                 )
                 .aggregate(
@@ -200,7 +237,7 @@ def home(request):
                 )
 
             action_certificates = Certificate.objects.filter(
-                assignment__training_action=training_action,
+                assignment__in=action_assignments,
                 active=True,
             ).count()
 
@@ -285,8 +322,7 @@ def home(request):
 
             participant_posttest_average = (
                 TrainingResult.objects.filter(
-                    assignment__training_action__institution=institution,
-                    assignment__user=participant,
+                    assignment__in=participant_assignments,
                     posttest_score__isnull=False,
                 )
                 .aggregate(
@@ -302,8 +338,7 @@ def home(request):
 
             participant_certificates = (
                 Certificate.objects.filter(
-                    assignment__training_action__institution=institution,
-                    assignment__user=participant,
+                    assignment__in=participant_assignments,
                     active=True,
                 ).count()
             )
@@ -366,6 +401,9 @@ def home(request):
             "certificates_issued": certificates_issued,
             "training_summary": training_summary,
             "participant_summary": participant_summary,
+            "available_training_actions": available_training_actions,
+            "selected_training_action_id": selected_training_action_id,
+            "selected_training_action": selected_training_action,
         }
 
         return render(
