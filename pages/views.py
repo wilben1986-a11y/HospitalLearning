@@ -22,6 +22,7 @@ from reportlab.platypus import Paragraph
 from certificates.models import Certificate
 from users.models import InstitutionalLink
 from training.models import (
+    ActionType,
     TrainingAction,
     TrainingAssignment,
     TrainingResult,
@@ -72,16 +73,50 @@ def home(request):
                 .order_by("name")
             )
 
+            available_action_types = (
+                ActionType.objects.filter(
+                    training_actions__institution=institution,
+                    training_actions__active=True,
+                )
+                .distinct()
+                .order_by("name")
+            )
+
             selected_training_action_id = request.GET.get(
                 "training_action",
                 "",
             ).strip()
 
+            selected_action_type_id = request.GET.get(
+                "action_type",
+                "",
+            ).strip()
+
             selected_training_action = None
+            selected_action_type = None
 
             assignments = TrainingAssignment.objects.filter(
                 training_action__institution=institution,
             )
+
+            if selected_action_type_id:
+                try:
+                    selected_action_type = (
+                        available_action_types.get(
+                            pk=selected_action_type_id,
+                        )
+                    )
+                except (
+                    ActionType.DoesNotExist,
+                    ValueError,
+                    TypeError,
+                ):
+                    selected_action_type_id = ""
+                    selected_action_type = None
+                else:
+                    assignments = assignments.filter(
+                        training_action__action_type=selected_action_type,
+                    )
 
             if selected_training_action_id:
                 try:
@@ -104,8 +139,11 @@ def home(request):
 
         else:
             available_training_actions = TrainingAction.objects.none()
+            available_action_types = ActionType.objects.none()
             selected_training_action_id = ""
+            selected_action_type_id = ""
             selected_training_action = None
+            selected_action_type = None
             assignments = TrainingAssignment.objects.none()
 
         total_participants = (
@@ -190,12 +228,17 @@ def home(request):
             active=True,
         ).count()
 
+        training_actions = available_training_actions
+
+        if selected_action_type is not None:
+            training_actions = training_actions.filter(
+                action_type=selected_action_type,
+            )
+
         if selected_training_action is not None:
-            training_actions = available_training_actions.filter(
+            training_actions = training_actions.filter(
                 pk=selected_training_action.pk,
             )
-        else:
-            training_actions = available_training_actions
 
         training_summary = []
 
@@ -402,8 +445,11 @@ def home(request):
             "training_summary": training_summary,
             "participant_summary": participant_summary,
             "available_training_actions": available_training_actions,
+            "available_action_types": available_action_types,
             "selected_training_action_id": selected_training_action_id,
             "selected_training_action": selected_training_action,
+            "selected_action_type_id": selected_action_type_id,
+            "selected_action_type": selected_action_type,
         }
 
         return render(
