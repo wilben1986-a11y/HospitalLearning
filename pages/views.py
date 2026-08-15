@@ -93,6 +93,12 @@ def home(request):
                 .order_by("user__profession")
             )
 
+            available_statuses = list(
+                TrainingAssignment._meta.get_field(
+                    "status"
+                ).choices
+            )
+
             selected_training_action_id = request.GET.get(
                 "training_action",
                 "",
@@ -105,6 +111,11 @@ def home(request):
 
             selected_profession = request.GET.get(
                 "profession",
+                "",
+            ).strip()
+
+            selected_status = request.GET.get(
+                "status",
                 "",
             ).strip()
 
@@ -121,6 +132,19 @@ def home(request):
                 else:
                     assignments = assignments.filter(
                         user__profession=selected_profession,
+                    )
+
+            valid_status_values = {
+                value
+                for value, _label in available_statuses
+            }
+
+            if selected_status:
+                if selected_status not in valid_status_values:
+                    selected_status = ""
+                else:
+                    assignments = assignments.filter(
+                        status=selected_status,
                     )
 
             if selected_action_type_id:
@@ -165,9 +189,11 @@ def home(request):
             available_training_actions = TrainingAction.objects.none()
             available_action_types = ActionType.objects.none()
             available_professions = []
+            available_statuses = []
             selected_training_action_id = ""
             selected_action_type_id = ""
             selected_profession = ""
+            selected_status = ""
             selected_training_action = None
             selected_action_type = None
             assignments = TrainingAssignment.objects.none()
@@ -473,11 +499,13 @@ def home(request):
             "available_training_actions": available_training_actions,
             "available_action_types": available_action_types,
             "available_professions": available_professions,
+            "available_statuses": available_statuses,
             "selected_training_action_id": selected_training_action_id,
             "selected_training_action": selected_training_action,
             "selected_action_type_id": selected_action_type_id,
             "selected_action_type": selected_action_type,
             "selected_profession": selected_profession,
+            "selected_status": selected_status,
         }
 
         return render(

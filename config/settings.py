@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -39,22 +40,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Aplicaciones del proyecto
-# Aplicaciones del proyecto
-
-'pages',
-
-'institutions',
-'users',
-
-'training',
-'resources',
-'assessments',
-
-'certificates',
-
-'dashboard',
-'reports',
+    'pages',
+    'institutions',
+    'users',
+    'training',
+    'resources',
+    'assessments',
+    'certificates',
+    'dashboard',
+    'reports',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,7 +62,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'config.urls'
+
 
 TEMPLATES = [
     {
@@ -82,6 +80,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -102,16 +101,28 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'MinimumLengthValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'CommonPasswordValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'NumericPasswordValidator'
+        ),
     },
 ]
 
@@ -132,12 +143,26 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-AUTH_USER_MODEL = "users.CustomUser"
+
+
+# Modelo de usuario personalizado
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
 
 # Archivos cargados por los usuarios
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
 # Permitir contenidos de HospitalLearning dentro de iframes del mismo sitio
-X_FRAME_OPTIONS = "SAMEORIGIN"
-LOGIN_REDIRECT_URL = "/mis-capacitaciones/"
-LOGOUT_REDIRECT_URL = "/cuenta/login/"
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+
+# Autenticación
+
+LOGIN_URL = '/cuenta/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/cuenta/login/'
