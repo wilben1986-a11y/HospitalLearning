@@ -148,6 +148,53 @@
                         </select>
                     </div>
 
+                    <div class="col-md-6 col-xl-3">
+                        <label for="date_from" class="form-label">Fecha desde</label>
+                        <input type="date" id="date_from" name="date_from"
+                               class="form-control" value="{{ selected_date_from }}">
+                    </div>
+
+                    <div class="col-md-6 col-xl-3">
+                        <label for="date_to" class="form-label">Fecha hasta</label>
+                        <input type="date" id="date_to" name="date_to"
+                               class="form-control" value="{{ selected_date_to }}">
+                    </div>
+
+                    <div class="col-md-6 col-xl-3">
+                        <label for="participant" class="form-label">Participante</label>
+                        <select id="participant" name="participant" class="form-select">
+                            <option value="">Todos los participantes</option>
+                            {% for participant in available_participants %}
+                                <option value="{{ participant.id }}"
+                                    {% if selected_participant_id == participant.id|stringformat:"s" %}selected{% endif %}>
+                                    {% if participant.get_full_name %}
+                                        {{ participant.get_full_name }}
+                                    {% else %}
+                                        {{ participant.username }}
+                                    {% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 col-xl-3">
+                        <label for="mandatory" class="form-label">Obligatoriedad</label>
+                        <select id="mandatory" name="mandatory" class="form-select">
+                            <option value="">Todas</option>
+                            <option value="yes" {% if selected_mandatory == "yes" %}selected{% endif %}>Obligatorias</option>
+                            <option value="no" {% if selected_mandatory == "no" %}selected{% endif %}>No obligatorias</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 col-xl-3">
+                        <label for="generates_certificate" class="form-label">Genera certificado</label>
+                        <select id="generates_certificate" name="generates_certificate" class="form-select">
+                            <option value="">Todas</option>
+                            <option value="yes" {% if selected_generates_certificate == "yes" %}selected{% endif %}>Sí</option>
+                            <option value="no" {% if selected_generates_certificate == "no" %}selected{% endif %}>No</option>
+                        </select>
+                    </div>
+
                     <div class="col-auto">
                         <button
                             type="submit"
@@ -157,7 +204,7 @@
                         </button>
                     </div>
 
-                    {% if selected_training_action or selected_action_type or selected_profession or selected_status %}
+                    {% if selected_training_action or selected_action_type or selected_profession or selected_status or selected_date_from or selected_date_to or selected_participant or selected_mandatory or selected_generates_certificate %}
                         <div class="col-auto">
                             <a
                                 href="{% url 'home' %}"
@@ -170,7 +217,7 @@
 
                 </form>
 
-                {% if selected_training_action or selected_action_type or selected_profession or selected_status %}
+                {% if selected_training_action or selected_action_type or selected_profession or selected_status or selected_date_from or selected_date_to or selected_participant or selected_mandatory or selected_generates_certificate %}
                     <div class="mt-3">
                         <span class="badge bg-primary">
                             Filtros activos
@@ -205,6 +252,35 @@
                                         {{ label }}
                                     {% endif %}
                                 {% endfor %}
+                            </span>
+                        {% endif %}
+
+                        {% if selected_date_from %}
+                            <span class="ms-2">Desde: {{ selected_date_from }}</span>
+                        {% endif %}
+                        {% if selected_date_to %}
+                            <span class="ms-2">Hasta: {{ selected_date_to }}</span>
+                        {% endif %}
+                        {% if selected_participant %}
+                            <span class="ms-2">
+                                Participante:
+                                {% if selected_participant.get_full_name %}
+                                    {{ selected_participant.get_full_name }}
+                                {% else %}
+                                    {{ selected_participant.username }}
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                        {% if selected_mandatory %}
+                            <span class="ms-2">
+                                Obligatoriedad:
+                                {% if selected_mandatory == "yes" %}Obligatorias{% else %}No obligatorias{% endif %}
+                            </span>
+                        {% endif %}
+                        {% if selected_generates_certificate %}
+                            <span class="ms-2">
+                                Certificado:
+                                {% if selected_generates_certificate == "yes" %}Sí{% else %}No{% endif %}
                             </span>
                         {% endif %}
                     </div>

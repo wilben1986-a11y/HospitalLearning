@@ -2,6 +2,8 @@ import json
 from io import BytesIO
 from pathlib import Path
 
+from datetime import date
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse
@@ -20,7 +22,7 @@ from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
 
 from certificates.models import Certificate
-from users.models import InstitutionalLink
+from users.models import CustomUser, InstitutionalLink
 from training.models import (
     ActionType,
     TrainingAction,
@@ -93,6 +95,14 @@ def home(request):
                 .order_by("user__profession")
             )
 
+            available_participants = (
+                CustomUser.objects.filter(
+                    training_assignments__training_action__institution=institution,
+                )
+                .distinct()
+                .order_by("last_name", "first_name", "username")
+            )
+
             available_statuses = list(
                 TrainingAssignment._meta.get_field(
                     "status"
@@ -114,17 +124,69 @@ def home(request):
                 "",
             ).strip()
 
-            selected_status = request.GET.get(
-                "status",
-                "",
+            selected_status = request.GET.get("status", "").strip()
+            selected_date_from = request.GET.get("date_from", "").strip()
+            selected_date_to = request.GET.get("date_to", "").strip()
+            selected_participant_id = request.GET.get("participant", "").strip()
+            selected_mandatory = request.GET.get("mandatory", "").strip()
+            selected_generates_certificate = request.GET.get(
+                "generates_certificate", ""
             ).strip()
 
             selected_training_action = None
+            selected_participant = None
             selected_action_type = None
 
             assignments = TrainingAssignment.objects.filter(
                 training_action__institution=institution,
             )
+
+            if selected_date_from:
+                try:
+                    date_from = date.fromisoformat(selected_date_from)
+                except ValueError:
+                    selected_date_from = ""
+                else:
+                    assignments = assignments.filter(
+                        assigned_at__date__gte=date_from
+                    )
+
+            if selected_date_to:
+                try:
+                    date_to = date.fromisoformat(selected_date_to)
+                except ValueError:
+                    selected_date_to = ""
+                else:
+                    assignments = assignments.filter(
+                        assigned_at__date__lte=date_to
+                    )
+
+            if selected_participant_id:
+                try:
+                    selected_participant = available_participants.get(
+                        pk=selected_participant_id
+                    )
+                except (CustomUser.DoesNotExist, ValueError, TypeError):
+                    selected_participant_id = ""
+                    selected_participant = None
+                else:
+                    assignments = assignments.filter(user=selected_participant)
+
+            if selected_mandatory in {"yes", "no"}:
+                assignments = assignments.filter(
+                    training_action__mandatory=(selected_mandatory == "yes")
+                )
+            else:
+                selected_mandatory = ""
+
+            if selected_generates_certificate in {"yes", "no"}:
+                assignments = assignments.filter(
+                    training_action__generates_certificate=(
+                        selected_generates_certificate == "yes"
+                    )
+                )
+            else:
+                selected_generates_certificate = ""
 
             if selected_profession:
                 if selected_profession not in available_professions:
@@ -189,13 +251,20 @@ def home(request):
             available_training_actions = TrainingAction.objects.none()
             available_action_types = ActionType.objects.none()
             available_professions = []
+            available_participants = CustomUser.objects.none()
             available_statuses = []
             selected_training_action_id = ""
             selected_action_type_id = ""
             selected_profession = ""
             selected_status = ""
+            selected_date_from = ""
+            selected_date_to = ""
+            selected_participant_id = ""
+            selected_mandatory = ""
+            selected_generates_certificate = ""
             selected_training_action = None
             selected_action_type = None
+            selected_participant = None
             assignments = TrainingAssignment.objects.none()
 
         total_participants = (
@@ -499,6 +568,7 @@ def home(request):
             "available_training_actions": available_training_actions,
             "available_action_types": available_action_types,
             "available_professions": available_professions,
+            "available_participants": available_participants,
             "available_statuses": available_statuses,
             "selected_training_action_id": selected_training_action_id,
             "selected_training_action": selected_training_action,
@@ -506,6 +576,12 @@ def home(request):
             "selected_action_type": selected_action_type,
             "selected_profession": selected_profession,
             "selected_status": selected_status,
+            "selected_date_from": selected_date_from,
+            "selected_date_to": selected_date_to,
+            "selected_participant_id": selected_participant_id,
+            "selected_participant": selected_participant,
+            "selected_mandatory": selected_mandatory,
+            "selected_generates_certificate": selected_generates_certificate,
         }
 
         return render(
