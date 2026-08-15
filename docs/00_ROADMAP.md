@@ -34,7 +34,7 @@ Sistema de Gestión de Acciones de Formación Continua para el Talento Humano en
 | 13. Biblioteca documental | ⏳ Pendiente |
 | 14. Biblioteca multimedia | ⏳ Pendiente |
 | 15. Banco institucional de preguntas | ⏳ Pendiente |
-| 16. Dashboard e indicadores | 🟡 En desarrollo |
+| 16. Dashboard e indicadores | ✅ Completado en su núcleo funcional |
 | 17. Reportes | ⏳ Pendiente |
 | 18. Despliegue en producción | ⏳ Pendiente |
 
@@ -331,9 +331,11 @@ La visualización se determina según el perfil del usuario autenticado.
 
 ## 11.1 Dashboard institucional
 
+### Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
+
 El Dashboard institucional utiliza la institución activa asociada al usuario administrador.
 
-Los indicadores se calculan utilizando únicamente las asignaciones correspondientes a la IPS activa.
+Los indicadores se calculan utilizando únicamente las asignaciones correspondientes a la IPS activa, manteniendo el aislamiento institucional de la información.
 
 Actualmente permite visualizar:
 
@@ -345,30 +347,67 @@ Actualmente permite visualizar:
 - Capacitaciones en progreso.
 - Capacitaciones aprobadas.
 - Capacitaciones no aprobadas.
+- Promedio institucional de pretest.
+- Promedio institucional de postest.
+- Mejora promedio del aprendizaje.
+- Número de certificados emitidos.
 
 El porcentaje de cumplimiento se calcula a partir de las asignaciones finalizadas respecto del total de asignaciones.
 
-### Pendiente para Dashboard institucional v2
+Los promedios institucionales se calculan únicamente con resultados válidos disponibles, evitando interpretar la ausencia de una evaluación como una calificación de cero.
 
-Incorporar:
+### Resumen por acción de formación
 
-- Resultados de evaluaciones.
-- Promedio institucional de pretest.
-- Promedio institucional de postest.
-- Mejora promedio.
-- Número de certificados emitidos.
-- Información resumida de acciones de formación.
-- Información resumida de participantes.
+Se encuentra implementado y validado un resumen institucional por cada acción de formación activa.
 
-Posteriormente incorporar filtros por:
+Permite visualizar:
 
-- Institución.
+- Nombre de la capacitación.
+- Código.
+- Tipo de acción.
+- Número de participantes asignados.
+- Pendientes.
+- En progreso.
+- Completados.
+- Aprobados.
+- No aprobados.
+- Porcentaje de cumplimiento.
+- Promedio de postest cuando existe.
+- Certificados emitidos.
+
+### Resumen de participantes
+
+Se encuentra implementado y validado un resumen individual de los usuarios con capacitaciones asignadas y vinculación activa a la institución.
+
+Permite visualizar:
+
+- Participante.
+- Documento.
+- Profesión.
+- Capacitaciones asignadas.
+- Pendientes.
+- En progreso.
+- Completadas.
+- Aprobadas.
+- No aprobadas.
+- Porcentaje de cumplimiento.
+- Promedio de postest cuando existe.
+- Certificados emitidos.
+
+La lógica del resumen de participantes fue validada tanto desde la consola de Django como desde la interfaz del Dashboard institucional.
+
+### Pendiente
+
+Incorporar filtros institucionales por:
+
 - Acción de formación.
 - Tipo de acción.
 - Profesión.
 - Servicio.
 - Estado.
 - Período.
+
+La institución no se plantea inicialmente como un filtro manual dentro del Dashboard, debido a que la información ya se restringe automáticamente a la IPS activa asociada al usuario administrador. Este criterio deberá revisarse cuando se implemente completamente la administración multi-IPS.
 
 ---
 
@@ -500,22 +539,24 @@ La arquitectura deberá permitir el uso de HospitalLearning por múltiples Insti
 
 # PRÓXIMO OBJETIVO
 
-## Dashboard institucional v2
+## Filtros del Dashboard institucional
 
-Completar los indicadores institucionales utilizando los datos que HospitalLearning ya registra.
+Los indicadores principales del Dashboard institucional, el resumen por acción de formación y el resumen de participantes ya se encuentran implementados y validados.
 
-El siguiente desarrollo deberá incorporar:
+El siguiente desarrollo será incorporar filtros que permitan analizar la información institucional sin perder el aislamiento de datos por IPS.
 
-1. Resultados de evaluación.
-2. Promedio institucional de pretest.
-3. Promedio institucional de postest.
-4. Mejora promedio de los participantes.
-5. Certificados emitidos.
+Se desarrollarán progresivamente filtros por:
 
-Una vez implementados y validados estos indicadores se continuará con:
+1. Acción de formación.
+2. Tipo de acción.
+3. Profesión.
+4. Servicio.
+5. Estado.
+6. Período.
 
-6. Resumen por acción de formación.
-7. Resumen de participantes.
-8. Filtros institucionales.
+Los filtros deberán aplicarse de forma coherente a los indicadores generales y a los resúmenes institucionales, evitando inconsistencias entre tarjetas, acciones de formación y participantes.
 
-Posteriormente se iniciará el desarrollo del módulo de reportes institucionales.
+La institución continuará determinándose inicialmente mediante la vinculación institucional activa del usuario administrador. La selección manual de IPS se evaluará posteriormente dentro de la validación completa del funcionamiento multi-IPS.
+
+Una vez implementados y validados los filtros institucionales se continuará con el desarrollo del módulo de reportes institucionales.
+
