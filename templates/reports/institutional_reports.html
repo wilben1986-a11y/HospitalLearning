@@ -1,0 +1,680 @@
+{% extends "base.html" %}
+
+{% block title %}Reportes institucionales | HospitalLearning{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+
+    <div>
+        <h2 class="mb-1">Reportes institucionales</h2>
+        <p class="text-muted mb-0">{{ institution }}</p>
+        <p class="text-muted small mb-0">
+            Evidencia, detalle y exportación de la formación institucional.
+        </p>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+            Volver al dashboard
+        </a>
+        <a
+            href="{% url 'reports:export_pdf' %}?{{ request.GET.urlencode }}"
+            class="btn btn-outline-primary"
+        >
+            Descargar PDF consolidado
+        </a>
+    </div>
+
+</div>
+
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <h5 class="mb-3">Filtros del reporte</h5>
+
+        <form method="get" class="row g-3 align-items-end">
+
+            <div class="col-md-6 col-xl-3">
+                <label for="action_type" class="form-label">Tipo de acción</label>
+                <select id="action_type" name="action_type" class="form-select">
+                    <option value="">Todos los tipos</option>
+                    {% for action_type in available_action_types %}
+                        <option
+                            value="{{ action_type.id }}"
+                            {% if selected.action_type == action_type.id|stringformat:"s" %}selected{% endif %}
+                        >
+                            {{ action_type.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <label for="training_action" class="form-label">
+                    Acción de formación
+                </label>
+                <select
+                    id="training_action"
+                    name="training_action"
+                    class="form-select"
+                >
+                    <option value="">Todas las capacitaciones</option>
+                    {% for training_action in available_training_actions %}
+                        <option
+                            value="{{ training_action.id }}"
+                            {% if selected.training_action == training_action.id|stringformat:"s" %}selected{% endif %}
+                        >
+                            {{ training_action.code }} - {{ training_action.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6 col-xl-2">
+                <label for="profession" class="form-label">Profesión</label>
+                <select id="profession" name="profession" class="form-select">
+                    <option value="">Todas</option>
+                    {% for profession in available_professions %}
+                        <option
+                            value="{{ profession }}"
+                            {% if selected.profession == profession %}selected{% endif %}
+                        >
+                            {{ profession }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6 col-xl-2">
+                <label for="status" class="form-label">Estado</label>
+                <select id="status" name="status" class="form-select">
+                    <option value="">Todos</option>
+                    {% for value, label in available_statuses %}
+                        <option
+                            value="{{ value }}"
+                            {% if selected.status == value %}selected{% endif %}
+                        >
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6 col-xl-2">
+                <label for="participant" class="form-label">Participante</label>
+                <select id="participant" name="participant" class="form-select">
+                    <option value="">Todos</option>
+                    {% for participant in available_participants %}
+                        <option
+                            value="{{ participant.id }}"
+                            {% if selected.participant == participant.id|stringformat:"s" %}selected{% endif %}
+                        >
+                            {% if participant.get_full_name %}
+                                {{ participant.get_full_name }}
+                            {% else %}
+                                {{ participant.username }}
+                            {% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-6 col-xl-2">
+                <label for="date_from" class="form-label">Fecha desde</label>
+                <input
+                    type="date"
+                    id="date_from"
+                    name="date_from"
+                    class="form-control"
+                    value="{{ selected.date_from }}"
+                >
+            </div>
+
+            <div class="col-md-6 col-xl-2">
+                <label for="date_to" class="form-label">Fecha hasta</label>
+                <input
+                    type="date"
+                    id="date_to"
+                    name="date_to"
+                    class="form-control"
+                    value="{{ selected.date_to }}"
+                >
+            </div>
+
+            <div class="col-md-6 col-xl-2">
+                <label for="mandatory" class="form-label">Obligatoriedad</label>
+                <select id="mandatory" name="mandatory" class="form-select">
+                    <option value="">Todas</option>
+                    <option value="yes" {% if selected.mandatory == "yes" %}selected{% endif %}>
+                        Obligatorias
+                    </option>
+                    <option value="no" {% if selected.mandatory == "no" %}selected{% endif %}>
+                        No obligatorias
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-6 col-xl-2">
+                <label for="generates_certificate" class="form-label">
+                    Genera certificado
+                </label>
+                <select
+                    id="generates_certificate"
+                    name="generates_certificate"
+                    class="form-select"
+                >
+                    <option value="">Todas</option>
+                    <option
+                        value="yes"
+                        {% if selected.generates_certificate == "yes" %}selected{% endif %}
+                    >
+                        Sí
+                    </option>
+                    <option
+                        value="no"
+                        {% if selected.generates_certificate == "no" %}selected{% endif %}
+                    >
+                        No
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    Aplicar filtros
+                </button>
+            </div>
+
+            <div class="col-auto">
+                <a href="{% url 'reports:institutional' %}" class="btn btn-outline-secondary">
+                    Limpiar filtros
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<div class="row g-3 mb-4">
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <div class="text-muted small">Asignaciones</div>
+                <h3 class="mb-0">{{ summary.assignments }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <div class="text-muted small">Participantes</div>
+                <h3 class="mb-0">{{ summary.participants }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <div class="text-muted small">Cumplimiento</div>
+                <h3 class="mb-0">{{ summary.compliance }} %</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <div class="text-muted small">Certificados</div>
+                <h3 class="mb-0">{{ summary.certificates }}</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <h4 class="mb-1">1. Cumplimiento institucional</h4>
+                <p class="text-muted mb-0">
+                    Detalle completo de asignaciones y resultados.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'reports:export_csv' 'cumplimiento' %}?{{ request.GET.urlencode }}"
+                class="btn btn-sm btn-outline-success"
+            >
+                Exportar para Excel
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Participante</th>
+                        <th>Documento</th>
+                        <th>Profesión</th>
+                        <th>Capacitación</th>
+                        <th>Asignación</th>
+                        <th>Estado</th>
+                        <th>Pretest</th>
+                        <th>Postest</th>
+                        <th>Certificado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in detail_rows %}
+                        <tr>
+                            <td>{{ row.participant }}</td>
+                            <td>{{ row.document }}</td>
+                            <td>{{ row.profession }}</td>
+                            <td>
+                                <strong>{{ row.training }}</strong>
+                                <div class="text-muted small">{{ row.code }}</div>
+                            </td>
+                            <td>{{ row.assigned_at|date:"d/m/Y" }}</td>
+                            <td>{{ row.status }}</td>
+                            <td>{% if row.pretest is not None %}{{ row.pretest }} %{% else %}—{% endif %}</td>
+                            <td>{% if row.posttest is not None %}{{ row.posttest }} %{% else %}—{% endif %}</td>
+                            <td>{% if row.certificate %}Sí{% else %}No{% endif %}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">
+                                No hay registros para los filtros seleccionados.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h4 class="mb-0">2. Seguimiento por acción de formación</h4>
+            <a
+                href="{% url 'reports:export_csv' 'acciones' %}?{{ request.GET.urlencode }}"
+                class="btn btn-sm btn-outline-success"
+            >
+                Exportar para Excel
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Capacitación</th>
+                        <th>Tipo</th>
+                        <th class="text-center">Asignadas</th>
+                        <th class="text-center">Completadas</th>
+                        <th class="text-center">Aprobadas</th>
+                        <th class="text-center">No aprobadas</th>
+                        <th class="text-center">Pendientes</th>
+                        <th class="text-center">Vencidas</th>
+                        <th class="text-center">Cumplimiento</th>
+                        <th class="text-center">Postest</th>
+                        <th class="text-center">Certificados</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in action_summary_rows %}
+                        <tr>
+                            <td>
+                                <strong>{{ row.training }}</strong>
+                                <div class="text-muted small">{{ row.code }}</div>
+                            </td>
+                            <td>{{ row.action_type }}</td>
+                            <td class="text-center">{{ row.assigned }}</td>
+                            <td class="text-center">{{ row.completed }}</td>
+                            <td class="text-center">{{ row.approved }}</td>
+                            <td class="text-center">{{ row.not_approved }}</td>
+                            <td class="text-center">{{ row.pending }}</td>
+                            <td class="text-center">{{ row.expired }}</td>
+                            <td class="text-center">{{ row.compliance }} %</td>
+                            <td class="text-center">
+                                {% if row.posttest_average is not None %}
+                                    {{ row.posttest_average }} %
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ row.certificates }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="11" class="text-center text-muted py-4">
+                                Sin información.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h4 class="mb-0">3. Historial por participante</h4>
+            <a
+                href="{% url 'reports:export_csv' 'participantes' %}?{{ request.GET.urlencode }}"
+                class="btn btn-sm btn-outline-success"
+            >
+                Exportar para Excel
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Participante</th>
+                        <th>Documento</th>
+                        <th>Profesión</th>
+                        <th class="text-center">Asignadas</th>
+                        <th class="text-center">Completadas</th>
+                        <th class="text-center">Aprobadas</th>
+                        <th class="text-center">Pendientes</th>
+                        <th class="text-center">Cumplimiento</th>
+                        <th class="text-center">Postest</th>
+                        <th class="text-center">Certificados</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in participant_summary_rows %}
+                        <tr>
+                            <td>
+                                <strong>{{ row.participant }}</strong>
+                                <div class="text-muted small">{{ row.username }}</div>
+                            </td>
+                            <td>{{ row.document }}</td>
+                            <td>{{ row.profession }}</td>
+                            <td class="text-center">{{ row.assigned }}</td>
+                            <td class="text-center">{{ row.completed }}</td>
+                            <td class="text-center">{{ row.approved }}</td>
+                            <td class="text-center">{{ row.pending }}</td>
+                            <td class="text-center">{{ row.compliance }} %</td>
+                            <td class="text-center">
+                                {% if row.posttest_average is not None %}
+                                    {{ row.posttest_average }} %
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ row.certificates }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-4">
+                                Sin información.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h4 class="mb-0">4. Cumplimiento por profesión</h4>
+            <a
+                href="{% url 'reports:export_csv' 'profesiones' %}?{{ request.GET.urlencode }}"
+                class="btn btn-sm btn-outline-success"
+            >
+                Exportar para Excel
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Profesión</th>
+                        <th class="text-center">Asignadas</th>
+                        <th class="text-center">Completadas</th>
+                        <th class="text-center">Aprobadas</th>
+                        <th class="text-center">No aprobadas</th>
+                        <th class="text-center">Pendientes</th>
+                        <th class="text-center">En progreso</th>
+                        <th class="text-center">Vencidas</th>
+                        <th class="text-center">Cumplimiento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in profession_summary_rows %}
+                        <tr>
+                            <td>{{ row.profession }}</td>
+                            <td class="text-center">{{ row.assigned }}</td>
+                            <td class="text-center">{{ row.completed }}</td>
+                            <td class="text-center">{{ row.approved }}</td>
+                            <td class="text-center">{{ row.not_approved }}</td>
+                            <td class="text-center">{{ row.pending }}</td>
+                            <td class="text-center">{{ row.in_progress }}</td>
+                            <td class="text-center">{{ row.expired }}</td>
+                            <td class="text-center">{{ row.compliance }} %</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">
+                                Sin información.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h4 class="mb-0">5. Capacitaciones pendientes y vencidas</h4>
+
+            <a
+                href="{% url 'reports:export_csv' 'pendientes' %}?{{ request.GET.urlencode }}"
+                class="btn btn-sm btn-outline-success"
+            >
+                Exportar para Excel
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Participante</th>
+                        <th>Profesión</th>
+                        <th>Capacitación</th>
+                        <th>Asignación</th>
+                        <th>Fecha límite</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in pending_rows %}
+                        <tr>
+                            <td>{{ row.participant }}</td>
+                            <td>{{ row.profession }}</td>
+                            <td>{{ row.training }}</td>
+                            <td>{{ row.assigned_at|date:"d/m/Y" }}</td>
+                            <td>
+                                {% if row.due_date %}
+                                    {{ row.due_date|date:"d/m/Y" }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>{{ row.status }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No hay capacitaciones pendientes o vencidas.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h4 class="mb-0">6. Resultados de evaluaciones</h4>
+
+            <a
+                href="{% url 'reports:export_csv' 'evaluaciones' %}?{{ request.GET.urlencode }}"
+                class="btn btn-sm btn-outline-success"
+            >
+                Exportar para Excel
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Participante</th>
+                        <th>Capacitación</th>
+                        <th>Pretest</th>
+                        <th>Postest</th>
+                        <th>Mejora</th>
+                        <th>Intentos</th>
+                        <th>Estado</th>
+                        <th>Finalización</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in evaluation_rows %}
+                        <tr>
+                            <td>{{ row.participant }}</td>
+                            <td>{{ row.training }}</td>
+                            <td>{% if row.pretest is not None %}{{ row.pretest }} %{% else %}—{% endif %}</td>
+                            <td>{% if row.posttest is not None %}{{ row.posttest }} %{% else %}—{% endif %}</td>
+                            <td>{% if row.improvement is not None %}{{ row.improvement }}{% else %}—{% endif %}</td>
+                            <td>{{ row.attempts }}</td>
+                            <td>{{ row.status }}</td>
+                            <td>
+                                {% if row.completed_at %}
+                                    {{ row.completed_at|date:"d/m/Y H:i" }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                No hay resultados para los filtros seleccionados.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <h4 class="mb-0">7. Certificados emitidos</h4>
+
+            <a
+                href="{% url 'reports:export_csv' 'certificados' %}?{{ request.GET.urlencode }}"
+                class="btn btn-sm btn-outline-success"
+            >
+                Exportar para Excel
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Participante</th>
+                        <th>Documento</th>
+                        <th>Capacitación</th>
+                        <th>Código</th>
+                        <th>Finalización</th>
+                        <th>Emisión</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in certificate_rows %}
+                        <tr>
+                            <td>{{ row.participant }}</td>
+                            <td>{{ row.document }}</td>
+                            <td>{{ row.training }}</td>
+                            <td>{{ row.code }}</td>
+                            <td>
+                                {% if row.completed_at %}
+                                    {{ row.completed_at|date:"d/m/Y H:i" }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if row.certificate_issued_at %}
+                                    {{ row.certificate_issued_at|date:"d/m/Y H:i" }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No hay certificados para los filtros seleccionados.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

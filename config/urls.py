@@ -16,6 +16,11 @@ urlpatterns = [
         include("django.contrib.auth.urls"),
     ),
 
+    path(
+        "reportes/",
+        include("reports.urls"),
+    ),
+
     path("", include("pages.urls")),
 ]
 
