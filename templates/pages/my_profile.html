@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Mi perfil | HospitalLearning{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2 class="mb-1">Mi perfil</h2>
+    <p class="text-muted mb-0">
+        Información personal e institucional registrada en HospitalLearning.
+    </p>
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-6">
+
+        <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+                <h5 class="mb-4">
+                    Información personal
+                </h5>
+
+                <dl class="row mb-0">
+
+                    <dt class="col-sm-5">Nombre</dt>
+                    <dd class="col-sm-7">
+                        {% if profile_user.get_full_name %}
+                            {{ profile_user.get_full_name }}
+                        {% else %}
+                            {{ profile_user.username }}
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-5">Usuario</dt>
+                    <dd class="col-sm-7">
+                        {{ profile_user.username }}
+                    </dd>
+
+                    <dt class="col-sm-5">Documento</dt>
+                    <dd class="col-sm-7">
+                        {{ profile_user.get_document_type_display }}
+                        {{ profile_user.document_number }}
+                    </dd>
+
+                    <dt class="col-sm-5">Profesión</dt>
+                    <dd class="col-sm-7">
+                        {{ profile_user.profession|default:"—" }}
+                    </dd>
+
+                    <dt class="col-sm-5">Correo electrónico</dt>
+                    <dd class="col-sm-7">
+                        {{ profile_user.email|default:"—" }}
+                    </dd>
+
+                    <dt class="col-sm-5">Teléfono</dt>
+                    <dd class="col-sm-7">
+                        {{ profile_user.phone|default:"—" }}
+                    </dd>
+
+                </dl>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-6">
+
+        <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+                <h5 class="mb-4">
+                    Vinculación institucional
+                </h5>
+
+                {% if institutional_links %}
+
+                    {% for link in institutional_links %}
+
+                        <div class="{% if not forloop.last %}border-bottom pb-3 mb-3{% endif %}">
+
+                            <h6 class="mb-2">
+                                {{ link.institution }}
+                            </h6>
+
+                            <p class="text-muted small mb-2">
+                                Vinculación activa desde
+                                {{ link.start_date|date:"d/m/Y" }}
+                            </p>
+
+                            <div>
+                                <strong>Servicios:</strong>
+
+                                {% for service in link.services.all %}
+                                    <span class="badge text-bg-light border ms-1">
+                                        {{ service.name }}
+                                    </span>
+                                {% empty %}
+                                    <span class="text-muted">
+                                        Sin servicios asociados
+                                    </span>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="alert alert-light border mb-0">
+                        No tienes una vinculación institucional activa.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

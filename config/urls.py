@@ -17,6 +17,31 @@ urlpatterns = [
     ),
 
     path(
+        "capacitaciones/",
+        include("training.urls"),
+    ),
+
+    path(
+        "usuarios/",
+        include("users.urls"),
+    ),
+
+    path(
+        "evaluaciones/",
+        include("assessments.urls"),
+    ),
+
+    path(
+        "certificados/",
+        include("certificates.urls"),
+    ),
+
+    path(
+        "institucion/",
+        include("institutions.urls"),
+    ),
+
+    path(
         "reportes/",
         include("reports.urls"),
     ),

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Certificados | HospitalLearning{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <h2 class="mb-1">Certificados</h2>
+    <p class="text-muted mb-0">{{ institution }}</p>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-7">
+                <label class="form-label">Buscar</label>
+                <input type="text" name="q" value="{{ q }}" class="form-control"
+                       placeholder="Participante, capacitación, código o verificación">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Estado</label>
+                <select name="active" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="yes" {% if selected_active == "yes" %}selected{% endif %}>Activos</option>
+                    <option value="no" {% if selected_active == "no" %}selected{% endif %}>Inactivos</option>
+                </select>
+            </div>
+            <div class="col-auto"><button class="btn btn-primary">Filtrar</button></div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <h4 class="mb-3">Certificados emitidos</h4>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead><tr>
+                    <th>Participante</th><th>Capacitación</th><th>Emisión</th>
+                    <th>Estado</th><th>Código de verificación</th>
+                </tr></thead>
+                <tbody>
+                {% for item in certificates %}
+                    <tr>
+                        <td>{% if item.assignment.user.get_full_name %}{{ item.assignment.user.get_full_name }}{% else %}{{ item.assignment.user.username }}{% endif %}</td>
+                        <td>{{ item.assignment.training_action.name }}</td>
+                        <td>{{ item.issued_at|date:"d/m/Y H:i" }}</td>
+                        <td>{% if item.active %}<span class="badge bg-success">Activo</span>{% else %}<span class="badge bg-secondary">Inactivo</span>{% endif %}</td>
+                        <td><code>{{ item.verification_code }}</code></td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">Sin certificados.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

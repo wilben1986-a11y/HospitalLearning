@@ -17,6 +17,18 @@ urlpatterns = [
     ),
 
     path(
+        "mis-certificados/",
+        views.my_certificates,
+        name="my_certificates",
+    ),
+
+    path(
+        "mi-perfil/",
+        views.my_profile,
+        name="my_profile",
+    ),
+
+    path(
         "capacitacion/<int:pk>/",
         views.training_view,
         name="training_view",

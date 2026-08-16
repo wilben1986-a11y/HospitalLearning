@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Capacitaciones | HospitalLearning{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <h2 class="mb-1">Capacitaciones</h2>
+    <p class="text-muted mb-0">{{ institution }}</p>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Buscar</label>
+                <input type="text" name="q" value="{{ q }}" class="form-control"
+                       placeholder="Nombre, código u objetivo">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Tipo</label>
+                <select name="action_type" class="form-select">
+                    <option value="">Todos</option>
+                    {% for item in action_types %}
+                    <option value="{{ item.id }}" {% if selected_action_type == item.id|stringformat:"s" %}selected{% endif %}>
+                        {{ item.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Estado</label>
+                <select name="status" class="form-select">
+                    <option value="">Todos</option>
+                    {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Activa</label>
+                <select name="active" class="form-select">
+                    <option value="">Todas</option>
+                    <option value="yes" {% if selected_active == "yes" %}selected{% endif %}>Sí</option>
+                    <option value="no" {% if selected_active == "no" %}selected{% endif %}>No</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">Acciones de formación</h4>
+            <a href="{% url 'admin:training_trainingaction_add' %}" class="btn btn-outline-primary btn-sm">
+                Nueva capacitación
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Código</th><th>Nombre</th><th>Tipo</th><th>Versión</th>
+                        <th>Estado</th><th>Obligatoria</th><th>Activa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in actions %}
+                    <tr>
+                        <td>{{ item.code }}</td>
+                        <td><strong>{{ item.name }}</strong></td>
+                        <td>{{ item.action_type.name }}</td>
+                        <td>{{ item.version }}</td>
+                        <td>{{ item.get_status_display }}</td>
+                        <td>{% if item.mandatory %}Sí{% else %}No{% endif %}</td>
+                        <td>{% if item.active %}Sí{% else %}No{% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="text-center text-muted py-4">Sin registros.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,37 +1,76 @@
 <div class="bg-light border-end vh-100 p-3" style="width:250px;">
 
-    <h5 class="mb-4">MENÚ</h5>
+    {% if user.is_staff or user.is_superuser %}
 
-    <div class="list-group">
+        <h5 class="mb-4">ADMINISTRACIÓN</h5>
 
-        <a href="#" class="list-group-item list-group-item-action">
-            🏠 Dashboard
-        </a>
+        <div class="list-group">
 
-        <a href="#" class="list-group-item list-group-item-action">
-            📚 Cursos
-        </a>
+            <a href="{% url 'home' %}"
+               class="list-group-item list-group-item-action">
+                🏠 Dashboard institucional
+            </a>
 
-        <a href="#" class="list-group-item list-group-item-action">
-            📝 Evaluaciones
-        </a>
+            <a href="{% url 'training_ui:management' %}"
+               class="list-group-item list-group-item-action">
+                📚 Capacitaciones
+            </a>
 
-        <a href="#" class="list-group-item list-group-item-action">
-            🏆 Certificados
-        </a>
+            <a href="{% url 'users_ui:management' %}"
+               class="list-group-item list-group-item-action">
+                👥 Usuarios
+            </a>
 
-        <a href="#" class="list-group-item list-group-item-action">
-            👥 Usuarios
-        </a>
+            <a href="{% url 'assessments_ui:management' %}"
+               class="list-group-item list-group-item-action">
+                📝 Evaluaciones
+            </a>
 
-        <a href="#" class="list-group-item list-group-item-action">
-            📊 Reportes
-        </a>
+            <a href="{% url 'certificates_ui:management' %}"
+               class="list-group-item list-group-item-action">
+                🏆 Certificados
+            </a>
 
-        <a href="#" class="list-group-item list-group-item-action">
-            ⚙️ Configuración
-        </a>
+            <a href="{% url 'reports:institutional' %}"
+               class="list-group-item list-group-item-action">
+                📊 Reportes institucionales
+            </a>
 
-    </div>
+            <a href="{% url 'institutions_ui:settings' %}"
+               class="list-group-item list-group-item-action">
+                ⚙️ Configuración
+            </a>
+
+        </div>
+
+    {% else %}
+
+        <h5 class="mb-4">MI ESPACIO</h5>
+
+        <div class="list-group">
+
+            <a href="{% url 'home' %}"
+               class="list-group-item list-group-item-action">
+                🏠 Mi inicio
+            </a>
+
+            <a href="{% url 'my_trainings' %}"
+               class="list-group-item list-group-item-action">
+                📚 Mis capacitaciones
+            </a>
+
+            <a href="{% url 'my_certificates' %}"
+               class="list-group-item list-group-item-action">
+                🏆 Mis certificados
+            </a>
+
+            <a href="{% url 'my_profile' %}"
+               class="list-group-item list-group-item-action">
+                👤 Mi perfil
+            </a>
+
+        </div>
+
+    {% endif %}
 
 </div>

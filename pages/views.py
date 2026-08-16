@@ -789,6 +789,63 @@ def my_trainings(request):
 
 
 @login_required
+def my_certificates(request):
+    """
+    Muestra los certificados activos pertenecientes
+    al usuario autenticado.
+    """
+
+    certificates = (
+        Certificate.objects.filter(
+            assignment__user=request.user,
+            active=True,
+        )
+        .select_related(
+            "assignment",
+            "assignment__training_action",
+            "assignment__training_action__institution",
+            "assignment__result",
+        )
+        .order_by("-issued_at")
+    )
+
+    return render(
+        request,
+        "pages/my_certificates.html",
+        {
+            "certificates": certificates,
+        },
+    )
+
+
+@login_required
+def my_profile(request):
+    """
+    Muestra la información personal e institucional
+    del usuario autenticado.
+    """
+
+    institutional_links = (
+        InstitutionalLink.objects.filter(
+            user=request.user,
+            active=True,
+        )
+        .select_related("institution")
+        .prefetch_related("services")
+        .order_by("institution__name")
+    )
+
+    return render(
+        request,
+        "pages/my_profile.html",
+        {
+            "profile_user": request.user,
+            "institutional_links": institutional_links,
+        },
+    )
+
+
+@login_required
 def training_view(request, pk):
     """
     Muestra el visor de una capacitación asignada

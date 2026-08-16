@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Usuarios | HospitalLearning{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <h2 class="mb-1">Usuarios</h2>
+    <p class="text-muted mb-0">{{ institution }}</p>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label">Buscar</label>
+                <input type="text" name="q" value="{{ q }}" class="form-control"
+                       placeholder="Nombre, usuario, documento o correo">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Profesión</label>
+                <select name="profession" class="form-select">
+                    <option value="">Todas</option>
+                    {% for item in professions %}
+                    <option value="{{ item }}" {% if selected_profession == item %}selected{% endif %}>{{ item }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Vinculación</label>
+                <select name="link_status" class="form-select">
+                    <option value="">Todas</option>
+                    <option value="active" {% if selected_link_status == "active" %}selected{% endif %}>Activa</option>
+                    <option value="inactive" {% if selected_link_status == "inactive" %}selected{% endif %}>Inactiva</option>
+                </select>
+            </div>
+            <div class="col-auto"><button class="btn btn-primary">Filtrar</button></div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">Participantes y usuarios</h4>
+            <a href="{% url 'admin:users_customuser_add' %}" class="btn btn-outline-primary btn-sm">
+                Nuevo usuario
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead><tr>
+                    <th>Usuario</th><th>Documento</th><th>Profesión</th>
+                    <th>Correo</th><th>Servicios</th><th>Vinculación</th>
+                </tr></thead>
+                <tbody>
+                {% for link in links %}
+                    <tr>
+                        <td>
+                            <strong>{% if link.user.get_full_name %}{{ link.user.get_full_name }}{% else %}{{ link.user.username }}{% endif %}</strong>
+                            <div class="text-muted small">{{ link.user.username }}</div>
+                        </td>
+                        <td>{{ link.user.get_document_type_display }} {{ link.user.document_number }}</td>
+                        <td>{{ link.user.profession|default:"—" }}</td>
+                        <td>{{ link.user.email|default:"—" }}</td>
+                        <td>
+                            {% for service in link.services.all %}
+                                <span class="badge text-bg-light border">{{ service.name }}</span>
+                            {% empty %}—{% endfor %}
+                        </td>
+                        <td>{% if link.active %}<span class="badge bg-success">Activa</span>{% else %}<span class="badge bg-secondary">Inactiva</span>{% endif %}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">Sin usuarios.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
