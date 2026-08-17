@@ -6,54 +6,153 @@
     <title>{{ training.name }}</title>
 
     <style>
-        body{
-            margin:0;
-            font-family:Arial,sans-serif;
-            background:#f4f6f8;
+        * {
+            box-sizing: border-box;
         }
 
-        .header{
-            background:#1f4e78;
-            color:white;
-            padding:16px 24px;
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
         }
 
-        .header h1{
-            margin:0;
+        .header {
+            background: #1f4e78;
+            color: white;
+            padding: 16px 24px;
         }
 
-        .header p{
-            margin-top:6px;
-            opacity:.85;
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
         }
 
-        iframe{
-            width:100%;
-            height:calc(100vh - 82px);
-            border:none;
+        .header p {
+            margin: 6px 0 0;
+            opacity: .85;
         }
 
-        .message{
-            margin:40px;
-            padding:30px;
-            background:white;
-            border-radius:8px;
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .back-link {
+            display: inline-block;
+            background: white;
+            color: #1f4e78;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 9px 14px;
+            border-radius: 7px;
+        }
+
+        .back-link:hover {
+            background: #eef4f8;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: white;
+            border-bottom: 1px solid #dfe3e8;
+            padding: 9px 24px;
+            font-size: 13px;
+        }
+
+        .status-item strong {
+            color: #1f4e78;
+        }
+
+        .status-message {
+            margin-left: auto;
+            color: #5f6b76;
+        }
+
+        .status-message.error {
+            color: #b42318;
+        }
+
+        .status-message.success {
+            color: #137333;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            height: calc(100vh - 126px);
+            border: none;
+            background: white;
+        }
+
+        .message {
+            margin: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        #csrf-form {
+            display: none;
         }
     </style>
-
 </head>
 
 <body>
 
 <header class="header">
-    <h1>{{ training.name }}</h1>
-    <p>{{ training.code }} · Versión {{ training.version }}</p>
+    <div class="header-row">
+        <div>
+            <h1>{{ training.name }}</h1>
+            <p>{{ training.code }} · Versión {{ training.version }}</p>
+        </div>
+
+        <a
+            href="{% url 'my_trainings' %}"
+            class="back-link"
+        >
+            ← Volver a mis capacitaciones
+        </a>
+    </div>
 </header>
+
+<form id="csrf-form">
+    {% csrf_token %}
+</form>
+
+<div class="status-bar">
+    <span class="status-item">
+        Estado:
+        <strong id="assignmentStatus">{{ assignment.get_status_display }}</strong>
+    </span>
+
+    <span class="status-item">
+        Etapa:
+        <strong id="progressStage">{{ assignment.get_progress_stage_display }}</strong>
+    </span>
+
+    <span class="status-item">
+        Módulo:
+        <strong id="currentModule">{{ assignment.current_module }}</strong>
+    </span>
+
+    <span id="statusMessage" class="status-message">
+        Preparando capacitación...
+    </span>
+</div>
 
 {% if training.learning_content %}
 
 <iframe
-    src="{% url 'training_content' training.pk %}">
+    id="trainingFrame"
+    src="{% url 'training_content' training.pk %}"
+    title="{{ training.name }}">
 </iframe>
 
 {% else %}
@@ -64,6 +163,348 @@
 </div>
 
 {% endif %}
+
+<script>
+(function () {
+    "use strict";
+
+    const TRAINING_ID = {{ training.pk }};
+    const PROGRESS_URL = "{% url 'training_progress' training.pk %}";
+    const RESULT_URL = "{% url 'save_training_result' training.pk %}";
+    const EXPECTED_ORIGIN = window.location.origin;
+
+    const frame = document.getElementById("trainingFrame");
+    const csrfToken = document.querySelector(
+        "#csrf-form input[name='csrfmiddlewaretoken']"
+    )?.value || "";
+
+    const statusElement = document.getElementById("assignmentStatus");
+    const stageElement = document.getElementById("progressStage");
+    const moduleElement = document.getElementById("currentModule");
+    const messageElement = document.getElementById("statusMessage");
+
+    let latestState = null;
+
+    const stageLabels = {
+        PRETEST: "Pretest",
+        CONTENT: "Contenido",
+        POSTTEST: "Postest",
+        COMPLETED: "Finalizada"
+    };
+
+    const statusLabels = {
+        PENDING: "Pendiente",
+        IN_PROGRESS: "En progreso",
+        APPROVED: "Aprobada",
+        NOT_APPROVED: "No aprobada",
+        EXPIRED: "Vencida"
+    };
+
+    function setMessage(text, kind = "") {
+        if (!messageElement) return;
+
+        messageElement.textContent = text;
+        messageElement.className = "status-message";
+
+        if (kind) {
+            messageElement.classList.add(kind);
+        }
+    }
+
+    function updateHeader(state) {
+        if (!state) return;
+
+        if (state.status && statusElement) {
+            statusElement.textContent =
+                statusLabels[state.status] || state.status;
+        }
+
+        if (state.progress_stage && stageElement) {
+            stageElement.textContent =
+                stageLabels[state.progress_stage] || state.progress_stage;
+        }
+
+        if (
+            state.current_module !== undefined &&
+            state.current_module !== null &&
+            moduleElement
+        ) {
+            moduleElement.textContent = state.current_module;
+        }
+    }
+
+    async function parseJsonResponse(response) {
+        let data;
+
+        try {
+            data = await response.json();
+        } catch (error) {
+            throw new Error(
+                "HospitalLearning recibió una respuesta no válida del servidor."
+            );
+        }
+
+        if (!response.ok || data.ok === false) {
+            throw new Error(
+                data.error || "No fue posible guardar la información."
+            );
+        }
+
+        return data;
+    }
+
+    async function fetchProgress() {
+        const response = await fetch(PROGRESS_URL, {
+            method: "GET",
+            credentials: "same-origin",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        });
+
+        return parseJsonResponse(response);
+    }
+
+    async function saveProgress(payload) {
+        const response = await fetch(PROGRESS_URL, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken,
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: JSON.stringify({
+                progress_stage: payload.progress_stage,
+                current_module: payload.current_module,
+                completed_modules: payload.completed_modules
+            })
+        });
+
+        return parseJsonResponse(response);
+    }
+
+    async function saveResult(payload) {
+        const response = await fetch(RESULT_URL, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken,
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        return parseJsonResponse(response);
+    }
+
+    function sendToTraining(type, payload = {}) {
+        if (!frame || !frame.contentWindow) return;
+
+        frame.contentWindow.postMessage(
+            {
+                source: "HOSPITALLEARNING",
+                type: type,
+                training_id: TRAINING_ID,
+                ...payload
+            },
+            EXPECTED_ORIGIN
+        );
+    }
+
+    async function sendInitialState() {
+        try {
+            setMessage("Cargando progreso...");
+
+            latestState = await fetchProgress();
+
+            updateHeader(latestState);
+
+            sendToTraining(
+                "HOSPITALLEARNING_INIT",
+                {
+                    state: latestState
+                }
+            );
+
+            setMessage("Progreso sincronizado.", "success");
+        } catch (error) {
+            console.error(error);
+            setMessage(error.message, "error");
+        }
+    }
+
+    async function handleProgressMessage(data) {
+        setMessage("Guardando progreso...");
+
+        const saved = await saveProgress(data);
+
+        latestState = {
+            ...(latestState || {}),
+            ...saved
+        };
+
+        updateHeader(latestState);
+
+        sendToTraining(
+            "HOSPITALLEARNING_PROGRESS_SAVED",
+            {
+                state: latestState
+            }
+        );
+
+        setMessage("Progreso guardado.", "success");
+    }
+
+    async function handlePretestMessage(data) {
+        setMessage("Guardando pretest...");
+
+        const saved = await saveResult({
+            action: "pretest",
+            pretest_score: data.score
+        });
+
+        latestState = {
+            ...(latestState || {}),
+            ...saved,
+            progress_stage: "CONTENT"
+        };
+
+        updateHeader(latestState);
+
+        sendToTraining(
+            "HOSPITALLEARNING_PRETEST_SAVED",
+            {
+                result: saved
+            }
+        );
+
+        setMessage("Pretest guardado.", "success");
+    }
+
+    async function handlePosttestMessage(data) {
+        setMessage("Guardando postest...");
+
+        const saved = await saveResult({
+            action: "posttest",
+            posttest_score: data.score
+        });
+
+        latestState = {
+            ...(latestState || {}),
+            ...saved,
+            progress_stage: "POSTTEST"
+        };
+
+        updateHeader(latestState);
+
+        sendToTraining(
+            "HOSPITALLEARNING_POSTTEST_SAVED",
+            {
+                result: saved
+            }
+        );
+
+        setMessage("Postest guardado.", "success");
+    }
+
+    async function handleFinishMessage() {
+        setMessage("Finalizando capacitación...");
+
+        const saved = await saveResult({
+            action: "finish"
+        });
+
+        latestState = {
+            ...(latestState || {}),
+            ...saved,
+            progress_stage: "COMPLETED",
+            status: saved.approved ? "APPROVED" : "NOT_APPROVED"
+        };
+
+        updateHeader(latestState);
+
+        sendToTraining(
+            "HOSPITALLEARNING_FINISHED",
+            {
+                result: saved
+            }
+        );
+
+        setMessage(
+            saved.approved
+                ? "Capacitación finalizada y aprobada."
+                : "Capacitación finalizada.",
+            "success"
+        );
+    }
+
+    window.addEventListener("message", async function (event) {
+        if (event.origin !== EXPECTED_ORIGIN) {
+            return;
+        }
+
+        if (!frame || event.source !== frame.contentWindow) {
+            return;
+        }
+
+        const data = event.data;
+
+        if (!data || typeof data !== "object") {
+            return;
+        }
+
+        if (data.source !== "HOSPITALLEARNING_CONTENT") {
+            return;
+        }
+
+        try {
+            switch (data.type) {
+                case "HOSPITALLEARNING_READY":
+                    await sendInitialState();
+                    break;
+
+                case "HOSPITALLEARNING_PROGRESS":
+                    await handleProgressMessage(data);
+                    break;
+
+                case "HOSPITALLEARNING_PRETEST":
+                    await handlePretestMessage(data);
+                    break;
+
+                case "HOSPITALLEARNING_POSTTEST":
+                    await handlePosttestMessage(data);
+                    break;
+
+                case "HOSPITALLEARNING_FINISH":
+                    await handleFinishMessage();
+                    break;
+
+                default:
+                    break;
+            }
+        } catch (error) {
+            console.error(error);
+
+            sendToTraining(
+                "HOSPITALLEARNING_ERROR",
+                {
+                    message: error.message
+                }
+            );
+
+            setMessage(error.message, "error");
+        }
+    });
+
+    if (frame) {
+        frame.addEventListener("load", function () {
+            setMessage("Contenido cargado. Sincronizando...");
+        });
+    }
+})();
+</script>
 
 </body>
 </html>

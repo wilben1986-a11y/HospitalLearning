@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Asignar capacitación | HospitalLearning{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+
+    <div>
+        <h2 class="mb-1">Asignar capacitación</h2>
+        <p class="text-muted mb-0">
+            {{ training.code }} - {{ training.name }}
+        </p>
+        <p class="text-muted small mb-0">
+            {{ institution }}
+        </p>
+    </div>
+
+    <a
+        href="{% url 'training_ui:management' %}"
+        class="btn btn-outline-secondary"
+    >
+        Volver
+    </a>
+
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if training.status != "PUBLISHED" or not training.active %}
+
+    <div class="alert alert-warning">
+        Para realizar nuevas asignaciones, la capacitación debe estar
+        <strong>Publicada</strong> y <strong>Activa</strong>.
+    </div>
+
+{% endif %}
+
+<div class="row g-4">
+
+    <div class="col-lg-5">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <h5 class="mb-3">Nueva asignación</h5>
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    {% for field in form %}
+
+                        <div class="mb-3">
+
+                            <label
+                                for="{{ field.id_for_label }}"
+                                class="form-label"
+                            >
+                                {{ field.label }}
+                            </label>
+
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <div class="form-text">
+                                    {{ field.help_text }}
+                                </div>
+                            {% endif %}
+
+                            {% for error in field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                    {% endfor %}
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        {% if training.status != "PUBLISHED" or not training.active %}disabled{% endif %}
+                    >
+                        Asignar participantes
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-7">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body">
+
+                <h5 class="mb-3">Participantes asignados</h5>
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Participante</th>
+                                <th>Fecha límite</th>
+                                <th>Estado</th>
+                                <th>Asignación</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for item in existing_assignments %}
+
+                                <tr>
+
+                                    <td>
+                                        {% if item.user.get_full_name %}
+                                            {{ item.user.get_full_name }}
+                                        {% else %}
+                                            {{ item.user.username }}
+                                        {% endif %}
+                                        <div class="text-muted small">
+                                            {{ item.user.document_number }}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        {% if item.due_date %}
+                                            {{ item.due_date|date:"d/m/Y" }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {{ item.get_status_display }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.assigned_at|date:"d/m/Y H:i" }}
+                                    </td>
+
+                                </tr>
+
+                            {% empty %}
+
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        Aún no hay participantes asignados.
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
