@@ -18,28 +18,14 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from .services import get_active_institution, get_report_context
+from users.access import require_institution_admin_with_link
 
-
-def _require_institutional_access(request):
-    if not (request.user.is_staff or request.user.is_superuser):
-        raise PermissionDenied(
-            "No tienes permisos para consultar reportes institucionales."
-        )
-
-    institution, institutional_link = get_active_institution(request.user)
-
-    if institution is None:
-        raise PermissionDenied(
-            "Tu usuario no tiene una institución activa asociada."
-        )
-
-    return institution, institutional_link
+from .services import get_report_context
 
 
 @login_required
 def institutional_reports(request):
-    institution, institutional_link = _require_institutional_access(request)
+    institution, institutional_link = require_institution_admin_with_link(request)
 
     report_data = get_report_context(
         institution,
@@ -61,7 +47,7 @@ def institutional_reports(request):
 
 @login_required
 def export_csv(request, report_type):
-    institution, _institutional_link = _require_institutional_access(request)
+    institution, _institutional_link = require_institution_admin_with_link(request)
 
     data = get_report_context(
         institution,
@@ -214,7 +200,7 @@ def export_csv(request, report_type):
 
 @login_required
 def export_pdf(request):
-    institution, _institutional_link = _require_institutional_access(request)
+    institution, _institutional_link = require_institution_admin_with_link(request)
 
     data = get_report_context(
         institution,

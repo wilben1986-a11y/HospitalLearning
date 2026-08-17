@@ -1,46 +1,17 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
-from users.models import InstitutionalLink
+from users.access import require_institution_admin
 
 from .forms import DocumentResourceForm, MediaResourceForm
 from .models import DocumentResource, MediaResource
 
 
-def _active_institution_for(user):
-    link = (
-        InstitutionalLink.objects.filter(
-            user=user,
-            active=True,
-        )
-        .select_related("institution")
-        .order_by("id")
-        .first()
-    )
-
-    return link.institution if link else None
-
-
-def _require_admin_institution(request):
-    if not (request.user.is_staff or request.user.is_superuser):
-        raise PermissionDenied
-
-    institution = _active_institution_for(request.user)
-
-    if institution is None:
-        raise PermissionDenied(
-            "No tienes una institución activa asociada."
-        )
-
-    return institution
-
-
 @login_required
 def document_library(request):
-    institution = _require_admin_institution(request)
+    institution = require_institution_admin(request)
 
     documents = (
         DocumentResource.objects.filter(
@@ -55,7 +26,9 @@ def document_library(request):
     )
 
     q = (request.GET.get("q") or "").strip()
-    document_type = (request.GET.get("document_type") or "").strip()
+    document_type = (
+        request.GET.get("document_type") or ""
+    ).strip()
     active = (request.GET.get("active") or "").strip()
 
     if q:
@@ -69,16 +42,21 @@ def document_library(request):
 
     valid_types = {
         value
-        for value, _label in DocumentResource.DOCUMENT_TYPE_CHOICES
+        for value, _label
+        in DocumentResource.DOCUMENT_TYPE_CHOICES
     }
 
     if document_type in valid_types:
-        documents = documents.filter(document_type=document_type)
+        documents = documents.filter(
+            document_type=document_type
+        )
     else:
         document_type = ""
 
     if active in {"yes", "no"}:
-        documents = documents.filter(active=(active == "yes"))
+        documents = documents.filter(
+            active=(active == "yes")
+        )
     else:
         active = ""
 
@@ -100,7 +78,7 @@ def document_library(request):
 
 @login_required
 def document_create(request):
-    institution = _require_admin_institution(request)
+    institution = require_institution_admin(request)
 
     if request.method == "POST":
         form = DocumentResourceForm(
@@ -111,10 +89,13 @@ def document_create(request):
 
         if form.is_valid():
             document = form.save(commit=False)
+
             document.institution = institution
             document.created_by = request.user
+
             document.full_clean()
             document.save()
+
             form.save_m2m()
 
             messages.success(
@@ -122,7 +103,9 @@ def document_create(request):
                 "Documento institucional creado correctamente.",
             )
 
-            return redirect("resources_ui:document_library")
+            return redirect(
+                "resources_ui:document_library"
+            )
 
     else:
         form = DocumentResourceForm(
@@ -137,14 +120,16 @@ def document_create(request):
             "institution": institution,
             "title": "Nuevo documento",
             "library_name": "Biblioteca documental",
-            "back_url_name": "resources_ui:document_library",
+            "back_url_name": (
+                "resources_ui:document_library"
+            ),
         },
     )
 
 
 @login_required
 def document_edit(request, pk):
-    institution = _require_admin_institution(request)
+    institution = require_institution_admin(request)
 
     document = get_object_or_404(
         DocumentResource,
@@ -162,9 +147,12 @@ def document_edit(request, pk):
 
         if form.is_valid():
             document = form.save(commit=False)
+
             document.institution = institution
+
             document.full_clean()
             document.save()
+
             form.save_m2m()
 
             messages.success(
@@ -172,7 +160,9 @@ def document_edit(request, pk):
                 "Documento institucional actualizado correctamente.",
             )
 
-            return redirect("resources_ui:document_library")
+            return redirect(
+                "resources_ui:document_library"
+            )
 
     else:
         form = DocumentResourceForm(
@@ -188,14 +178,16 @@ def document_edit(request, pk):
             "institution": institution,
             "title": "Editar documento",
             "library_name": "Biblioteca documental",
-            "back_url_name": "resources_ui:document_library",
+            "back_url_name": (
+                "resources_ui:document_library"
+            ),
         },
     )
 
 
 @login_required
 def media_library(request):
-    institution = _require_admin_institution(request)
+    institution = require_institution_admin(request)
 
     resources = (
         MediaResource.objects.filter(
@@ -210,7 +202,9 @@ def media_library(request):
     )
 
     q = (request.GET.get("q") or "").strip()
-    media_type = (request.GET.get("media_type") or "").strip()
+    media_type = (
+        request.GET.get("media_type") or ""
+    ).strip()
     active = (request.GET.get("active") or "").strip()
 
     if q:
@@ -224,16 +218,21 @@ def media_library(request):
 
     valid_types = {
         value
-        for value, _label in MediaResource.MEDIA_TYPE_CHOICES
+        for value, _label
+        in MediaResource.MEDIA_TYPE_CHOICES
     }
 
     if media_type in valid_types:
-        resources = resources.filter(media_type=media_type)
+        resources = resources.filter(
+            media_type=media_type
+        )
     else:
         media_type = ""
 
     if active in {"yes", "no"}:
-        resources = resources.filter(active=(active == "yes"))
+        resources = resources.filter(
+            active=(active == "yes")
+        )
     else:
         active = ""
 
@@ -243,7 +242,9 @@ def media_library(request):
         {
             "institution": institution,
             "resources": resources,
-            "media_type_choices": MediaResource.MEDIA_TYPE_CHOICES,
+            "media_type_choices": (
+                MediaResource.MEDIA_TYPE_CHOICES
+            ),
             "q": q,
             "selected_media_type": media_type,
             "selected_active": active,
@@ -253,7 +254,7 @@ def media_library(request):
 
 @login_required
 def media_create(request):
-    institution = _require_admin_institution(request)
+    institution = require_institution_admin(request)
 
     if request.method == "POST":
         form = MediaResourceForm(
@@ -264,10 +265,13 @@ def media_create(request):
 
         if form.is_valid():
             media = form.save(commit=False)
+
             media.institution = institution
             media.created_by = request.user
+
             media.full_clean()
             media.save()
+
             form.save_m2m()
 
             messages.success(
@@ -275,7 +279,9 @@ def media_create(request):
                 "Recurso multimedia creado correctamente.",
             )
 
-            return redirect("resources_ui:media_library")
+            return redirect(
+                "resources_ui:media_library"
+            )
 
     else:
         form = MediaResourceForm(
@@ -290,14 +296,16 @@ def media_create(request):
             "institution": institution,
             "title": "Nuevo recurso multimedia",
             "library_name": "Biblioteca multimedia",
-            "back_url_name": "resources_ui:media_library",
+            "back_url_name": (
+                "resources_ui:media_library"
+            ),
         },
     )
 
 
 @login_required
 def media_edit(request, pk):
-    institution = _require_admin_institution(request)
+    institution = require_institution_admin(request)
 
     media = get_object_or_404(
         MediaResource,
@@ -315,9 +323,12 @@ def media_edit(request, pk):
 
         if form.is_valid():
             media = form.save(commit=False)
+
             media.institution = institution
+
             media.full_clean()
             media.save()
+
             form.save_m2m()
 
             messages.success(
@@ -325,7 +336,9 @@ def media_edit(request, pk):
                 "Recurso multimedia actualizado correctamente.",
             )
 
-            return redirect("resources_ui:media_library")
+            return redirect(
+                "resources_ui:media_library"
+            )
 
     else:
         form = MediaResourceForm(
@@ -341,6 +354,8 @@ def media_edit(request, pk):
             "institution": institution,
             "title": "Editar recurso multimedia",
             "library_name": "Biblioteca multimedia",
-            "back_url_name": "resources_ui:media_library",
+            "back_url_name": (
+                "resources_ui:media_library"
+            ),
         },
     )

@@ -9,23 +9,6 @@ FINAL_STATUSES = {"APPROVED", "NOT_APPROVED"}
 OPEN_STATUSES = {"PENDING", "IN_PROGRESS", "EXPIRED"}
 
 
-def get_active_institution(user):
-    link = (
-        InstitutionalLink.objects.filter(
-            user=user,
-            active=True,
-        )
-        .select_related("institution")
-        .order_by("id")
-        .first()
-    )
-
-    if link is None:
-        return None, None
-
-    return link.institution, link
-
-
 def get_report_context(institution, params):
     base_assignments = (
         TrainingAssignment.objects.filter(
