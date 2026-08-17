@@ -1,562 +1,505 @@
-# ROADMAP DEL PROYECTO
+ROADMAP DEL PROYECTO
 
-# HospitalLearning
+HospitalLearning
 
 Sistema de Gestión de Acciones de Formación Continua para el Talento Humano en Salud
 
----
+Convenciones de estado
 
-## Convenciones de estado
+✅ Completado: componente implementado, validado y funcional en su alcance actual.
 
-- ✅ Completado: componente implementado y funcional.
-- 🟡 En desarrollo: componente implementado parcialmente o pendiente de completar/validar.
-- ⏳ Pendiente: componente aún no desarrollado.
+🟡 En desarrollo: componente funcional en parte, pero con funcionalidades relevantes pendientes.
 
----
+⏳ Pendiente: componente aún no desarrollado.
 
-# Estado general del proyecto
+Estado general del proyecto
 
-| Fase | Estado |
-| --- | --- |
-| 0. Configuración del proyecto Django | ✅ Completado |
-| 1. Control de versiones (Git y GitHub) | ✅ Completado |
-| 2. Estructura inicial del proyecto | ✅ Completado |
-| 3. Visión del proyecto | ✅ Completado |
-| 4. Modelo funcional | ✅ Completado |
-| 5. Modelo de datos | 🟡 En desarrollo |
-| 6. Autenticación | ✅ Completado |
-| 7. Gestión de usuarios e instituciones | 🟡 En desarrollo |
-| 8. Acciones de formación | ✅ Completado |
-| 9. Asignación y seguimiento de capacitaciones | ✅ Completado |
-| 10. Ejecución de contenido interactivo | ✅ Completado |
-| 11. Evaluaciones y resultados | 🟡 En desarrollo |
-| 12. Certificados | ✅ Completado |
-| 13. Biblioteca documental | ⏳ Pendiente |
-| 14. Biblioteca multimedia | ⏳ Pendiente |
-| 15. Banco institucional de preguntas | ⏳ Pendiente |
-| 16. Dashboard e indicadores | ✅ Completado en su núcleo funcional |
-| 17. Reportes | ⏳ Pendiente |
-| 18. Despliegue en producción | ⏳ Pendiente |
+Fase
 
----
+Estado
 
-# 1. Infraestructura del proyecto
+0. Configuración del proyecto Django
 
-## Estado: ✅ COMPLETADO
+✅ Completado
 
-Se encuentra implementado:
+1. Control de versiones (Git y GitHub)
 
-- Proyecto Django.
-- Entorno virtual de Python.
-- Base de datos de desarrollo.
-- Estructura modular mediante aplicaciones Django.
-- Control de versiones mediante Git.
-- Repositorio remoto en GitHub.
-- Servidor local de desarrollo.
-- Organización de templates y archivos del proyecto.
+✅ Completado
 
----
+2. Estructura inicial del proyecto
 
-# 2. Instituciones, servicios y usuarios
+✅ Completado
 
-## Estado: 🟡 EN DESARROLLO
+3. Visión y modelo funcional
 
-Actualmente existen los modelos:
+✅ Completado
 
-- Institution.
-- Service.
-- CustomUser.
-- InstitutionalLink.
+4. Modelo de datos
 
-La arquitectura permite relacionar usuarios con instituciones y gestionar su vinculación institucional.
+🟡 En desarrollo
 
-Se ha validado inicialmente la vinculación de usuarios con una institución activa y el uso de esta relación para limitar los indicadores institucionales a la IPS correspondiente.
+5. Autenticación
 
-## Pendiente
+✅ Completado
 
-- Completar pruebas funcionales de administración de servicios.
-- Revisar permisos y roles.
-- Validar completamente el comportamiento multi-IPS.
-- Completar interfaces de administración cuando sea necesario.
+6. Gestión de usuarios e instituciones
 
----
+🟡 En desarrollo
 
-# 3. Acciones de formación continua
+7. Acciones de formación
 
-## Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
+✅ Completado en su núcleo funcional
 
-Actualmente existen:
+8. Asignación y seguimiento
 
-- ActionType.
-- TrainingAction.
-- TrainingAssignment.
-- TrainingResult.
+✅ Completado en su núcleo funcional
 
-El sistema permite:
+9. Contenido interactivo
 
-- Crear tipos de acción.
-- Crear y parametrizar acciones de formación.
-- Definir versión.
-- Definir estado.
-- Configurar obligatoriedad.
-- Configurar pretest.
-- Configurar evaluación final.
-- Configurar requisito de revisión completa del contenido.
-- Configurar puntaje mínimo.
-- Configurar número máximo de intentos.
-- Configurar generación de certificado.
-- Configurar emisión automática del certificado.
-- Asignar capacitaciones a participantes.
+✅ Completado en su núcleo funcional
 
----
+10. Evaluaciones y resultados
 
-# 4. Contenido interactivo de capacitación
+🟡 En desarrollo
 
-## Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
+11. Certificados
 
-HospitalLearning permite utilizar archivos HTML como contenido principal de una acción de formación.
+✅ Completado en su núcleo funcional
 
-Se encuentra probado el flujo:
+12. Biblioteca documental
+
+⏳ Pendiente
+
+13. Biblioteca multimedia
+
+⏳ Pendiente
+
+14. Banco institucional de preguntas
+
+⏳ Pendiente
+
+15. Dashboard e indicadores
+
+✅ Completado en su alcance actual
+
+16. Reportes institucionales
+
+✅ Completado en su núcleo funcional
+
+17. Navegación e interfaces por rol
+
+✅ Completado en su núcleo funcional
+
+18. Validación integral multi-IPS
+
+🟡 En desarrollo
+
+19. Despliegue en producción
+
+⏳ Pendiente
+
+1. Infraestructura del proyecto
+
+Estado: ✅ COMPLETADO
+
+Implementado:
+
+Proyecto Django y entorno virtual de Python.
+
+Base de datos de desarrollo SQLite.
+
+Arquitectura modular mediante aplicaciones Django.
+
+Git y repositorio remoto en GitHub.
+
+Servidor local de desarrollo.
+
+Templates y archivos del proyecto.
+
+Archivos cargados por usuarios.
+
+Autenticación integrada mediante Django.
+
+2. Instituciones, servicios y usuarios
+
+Estado: 🟡 EN DESARROLLO
+
+Modelos existentes:
+
+Institution.
+
+Service.
+
+CustomUser.
+
+InstitutionalLink.
+
+Implementado y validado:
+
+Vinculación de usuarios con instituciones.
+
+Vinculaciones activas e inactivas.
+
+Asociación de usuarios con servicios.
+
+Uso de la institución activa para limitar Dashboard, reportes e interfaces administrativas.
+
+Interfaz institucional de usuarios.
+
+Búsqueda, filtro por profesión y filtro por estado de vinculación.
+
+Visualización de servicios asociados.
+
+Página “Mi perfil” para participantes.
+
+Visualización de la vinculación institucional activa.
+
+Pendiente
+
+Completar pruebas de administración de servicios.
+
+Consolidar permisos y roles más allá de staff/superusuario y participante.
+
+Validar escenarios con múltiples IPS.
+
+Definir selección/cambio de IPS cuando existan varias vinculaciones activas.
+
+Revisar permisos granulares por institución.
+
+Completar operaciones internas que todavía dependan de Django Admin.
+
+3. Acciones de formación continua
+
+Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
+
+Existen ActionType, TrainingAction, TrainingAssignment y TrainingResult.
+
+El sistema permite crear y parametrizar acciones de formación; definir versión, estado y obligatoriedad; configurar pretest, evaluación final, revisión completa del contenido, puntaje mínimo, intentos, certificados y emisión automática; y asignar capacitaciones a participantes.
+
+La interfaz administrativa propia permite consultar, buscar y filtrar capacitaciones por tipo, estado y condición activa/inactiva. Django Admin se conserva como herramienta técnica de respaldo.
+
+4. Contenido interactivo de capacitación
+
+Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
+
+Flujo probado:
 
 Pretest → Contenido por módulos → Postest → Finalización
 
-El sistema permite:
+Permite abrir contenido HTML dentro de HospitalLearning, registrar pretest, bloquear contenido cuando corresponde, registrar módulos y etapa actual, conservar y reanudar progreso, bloquear postest hasta completar los módulos requeridos, registrar postest y finalizar la capacitación.
 
-- Abrir contenido HTML dentro de HospitalLearning.
-- Registrar el pretest.
-- Bloquear inicialmente el contenido cuando corresponde.
-- Registrar módulos completados.
-- Registrar el módulo actual.
-- Registrar la etapa actual.
-- Salir de una capacitación sin perder el progreso.
-- Reanudar desde el punto registrado.
-- Bloquear el postest hasta revisar todos los módulos requeridos.
-- Registrar resultados del postest.
-- Finalizar la capacitación.
+Existe un prompt maestro para crear nuevos contenidos compatibles con HospitalLearning.
 
-Existe además un prompt maestro documentado para facilitar la creación de nuevos contenidos compatibles con HospitalLearning.
+5. Evaluaciones y resultados
 
----
+Estado: 🟡 EN DESARROLLO
 
-# 5. Evaluaciones y resultados
+Actualmente se registran:
 
-## Estado: 🟡 EN DESARROLLO
+Pretest.
 
-Actualmente HospitalLearning recibe y almacena los resultados generados desde el contenido interactivo de la capacitación.
+Postest.
 
-El sistema permite registrar:
+Mejor resultado.
 
-- Resultado inicial del pretest.
-- Resultado del postest.
-- Mejor resultado obtenido.
-- Mejora entre pretest y postest.
-- Número de intentos.
-- Estado de aprobación.
-- Fecha de finalización.
+Mejora.
 
-Los resultados ya son utilizados por:
+Número de intentos.
 
-- El seguimiento individual del participante.
-- El Dashboard personal.
-- Los indicadores de aprobación.
-- Los promedios de pretest.
-- Los promedios de postest.
-- El cálculo de mejora del aprendizaje.
+Estado de aprobación.
 
-El sistema maneja capacitaciones que pueden finalizar sin disponer necesariamente de resultados de pretest o postest, evitando interpretar la ausencia de resultado como una calificación de cero.
+Fecha de finalización.
 
-## Pendiente
+Estos datos alimentan seguimiento individual, Dashboard personal, Dashboard institucional, indicadores y reportes. La interfaz administrativa permite consultar resultados por participante y capacitación y filtrar por aprobación.
 
-El modelo de datos contempla una arquitectura más amplia que todavía no está implementada completamente:
+La ausencia de pretest o postest no se interpreta como calificación cero.
 
-- Evaluación como entidad independiente.
-- Banco institucional de preguntas.
-- Opciones de respuesta.
-- Intentos individuales de evaluación.
-- Reutilización de preguntas entre capacitaciones.
+Pendiente
 
-Antes de implementar esta arquitectura deberá definirse cómo coexistirá con las evaluaciones incluidas dentro de los archivos HTML interactivos.
+Evaluación como entidad independiente.
 
----
+Banco institucional de preguntas.
 
-# 6. Seguimiento del participante
+Opciones de respuesta.
 
-## Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
+Intentos individuales de evaluación.
 
-El participante puede consultar:
+Reutilización de preguntas.
 
-- Capacitaciones pendientes.
-- Capacitaciones en progreso.
-- Capacitaciones realizadas.
-- Estado de aprobación.
-- Resultado del pretest.
-- Mejor resultado del postest.
-- Mejora obtenida.
-- Intentos utilizados.
-- Fecha de finalización.
+Evaluaciones nativas dentro de HospitalLearning.
 
-El sistema conserva el progreso cuando el participante abandona una capacitación y permite retomarla posteriormente.
+Antes de implementarlo deberá definirse cómo coexistirá con las evaluaciones incluidas en los archivos HTML interactivos.
 
-Además, se encuentra implementado un Dashboard personal del participante.
+6. Seguimiento del participante
 
-## Dashboard personal del participante
+Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
 
-El Dashboard permite visualizar:
+El participante consulta capacitaciones pendientes, en progreso y realizadas; aprobación; pretest; mejor postest; mejora; intentos y fecha de finalización. El progreso se conserva y puede reanudarse.
 
-- Total de capacitaciones asignadas.
-- Capacitaciones pendientes.
-- Capacitaciones en progreso.
-- Capacitaciones realizadas.
-- Capacitaciones aprobadas.
-- Capacitaciones no aprobadas.
-- Promedio de resultados del pretest.
-- Promedio de resultados del postest.
-- Mejora promedio.
-- Número de certificados activos.
+El Dashboard personal muestra asignadas, pendientes, en progreso, realizadas, aprobadas, no aprobadas, promedios pretest/postest, mejora, certificados, próximas capacitaciones y últimas realizadas.
 
-También permite consultar:
+Navegación propia:
 
-- Próximas capacitaciones pendientes o en progreso.
-- Últimas capacitaciones realizadas.
-- Resultado del postest cuando existe.
-- Certificados recientes.
-- Acceso directo a Mis capacitaciones.
-- Acceso directo a certificados disponibles.
+Mi inicio.
 
-Los promedios se calculan únicamente con evaluaciones que contienen resultados válidos.
+Mis capacitaciones.
 
----
+Mis certificados.
 
-# 7. Certificados
+Mi perfil.
 
-## Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
+7. Certificados
 
-Actualmente existe el modelo:
+Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
 
-- Certificate.
+Existe Certificate y se encuentra implementada la generación automática cuando corresponde, código único de verificación, fecha de emisión, estado activo, visualización, impresión, PDF, descarga, restricción de acceso, certificados recientes, página “Mis certificados” e interfaz administrativa institucional con búsqueda y filtro por estado.
 
-El sistema permite:
+Mejoras futuras
 
-- Generación automática del certificado cuando corresponde.
-- Relación del certificado con la asignación del participante.
-- Código único de verificación.
-- Fecha de emisión.
-- Estado activo.
-- Visualización del certificado desde HospitalLearning.
-- Impresión desde navegador.
-- Generación de certificado en PDF.
-- Descarga directa del PDF.
-- Restricción de acceso al certificado al usuario correspondiente.
-- Visualización de certificados recientes desde el Dashboard del participante.
+Logo y firma institucional parametrizables.
 
-## Mejoras futuras
+Cargo del responsable.
 
-- Logo institucional parametrizable.
-- Firma institucional.
-- Cargo del responsable.
-- Personalización visual por IPS.
-- Verificación pública mediante código.
-- Manejo de vigencia, vencimiento o revocación cuando aplique.
+Personalización visual por IPS.
 
----
+Verificación pública mediante código.
 
-# 8. Biblioteca documental
+Vigencia, vencimiento o revocación cuando aplique.
 
-## Estado: ⏳ PENDIENTE
+8. Biblioteca documental
 
-El componente está definido en el modelo de datos, pero todavía no se encuentra implementado como modelo funcional de Django.
+Estado: ⏳ PENDIENTE
 
-Deberá permitir administrar documentos institucionales como:
+Deberá administrar y reutilizar protocolos, guías de práctica clínica, procedimientos, manuales, instructivos, formatos, resoluciones y otros documentos de referencia, respetando la institución correspondiente.
 
-- Protocolos.
-- Guías de práctica clínica.
-- Procedimientos.
-- Manuales.
-- Instructivos.
-- Formatos.
-- Resoluciones.
-- Otros documentos de referencia.
+Este componente forma parte del próximo bloque de desarrollo.
 
-Los documentos podrán reutilizarse en diferentes acciones de formación.
+9. Biblioteca multimedia
 
----
+Estado: ⏳ PENDIENTE
 
-# 9. Biblioteca multimedia
+Deberá administrar y reutilizar videos, presentaciones, audios, imágenes, infografías, enlaces y otros recursos multimedia asociados a acciones de formación.
 
-## Estado: ⏳ PENDIENTE
+Este componente forma parte del próximo bloque de desarrollo.
 
-El componente está definido conceptualmente pero aún no se encuentra implementado completamente.
+10. Banco institucional de preguntas
 
-Deberá permitir administrar recursos como:
+Estado: ⏳ PENDIENTE
 
-- Videos.
-- Presentaciones.
-- Audios.
-- Imágenes.
-- Infografías.
-- Enlaces.
-- Otros recursos multimedia.
+Deberá permitir registrar preguntas y opciones, clasificarlas, reutilizarlas, asociarlas a evaluaciones y mantener trazabilidad institucional.
 
----
+Se desarrollará después de consolidar las bibliotecas y definir la convivencia entre evaluaciones nativas y evaluaciones HTML.
 
-# 10. Banco institucional de preguntas
+11. Dashboard e indicadores
 
-## Estado: ⏳ PENDIENTE
+Estado: ✅ COMPLETADO EN SU ALCANCE ACTUAL
 
-Está definido en el modelo de datos, pero todavía no existe como modelo funcional de Django.
+HospitalLearning dispone de Dashboard institucional y Dashboard personal según el perfil autenticado.
 
-Deberá permitir:
+11.1 Dashboard institucional
 
-- Registrar preguntas.
-- Registrar opciones de respuesta.
-- Clasificar preguntas.
-- Reutilizar preguntas.
-- Asociarlas a evaluaciones.
-- Mantener trazabilidad institucional.
+Utiliza la institución activa del administrador y restringe los datos a la IPS correspondiente.
 
----
+Incluye indicadores de participantes, asignaciones, completadas, cumplimiento, pendientes, en progreso, aprobadas, no aprobadas, promedios pretest/postest, mejora y certificados.
 
-# 11. Dashboard e indicadores
+Dispone de resumen por acción de formación y resumen individual de participantes.
 
-## Estado: 🟡 EN DESARROLLO
+Filtros institucionales
 
-HospitalLearning dispone actualmente de dos tipos de Dashboard:
+Implementados y validados en el alcance actual:
 
-1. Dashboard institucional.
-2. Dashboard personal del participante.
+Acción de formación.
 
-La visualización se determina según el perfil del usuario autenticado.
+Tipo de acción.
 
----
+Profesión.
 
-## 11.1 Dashboard institucional
+Estado.
 
-### Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
+Período.
 
-El Dashboard institucional utiliza la institución activa asociada al usuario administrador.
+El filtro por servicio no se incorporó al Dashboard por decisión de alcance actual.
 
-Los indicadores se calculan utilizando únicamente las asignaciones correspondientes a la IPS activa, manteniendo el aislamiento institucional de la información.
+La institución continúa determinándose por la vinculación institucional activa. La selección manual de IPS se evaluará durante la validación multi-IPS.
 
-Actualmente permite visualizar:
+11.2 Dashboard personal
 
-- Total de participantes con capacitaciones asignadas.
-- Total de capacitaciones asignadas.
-- Capacitaciones completadas.
-- Porcentaje de cumplimiento.
-- Capacitaciones pendientes.
-- Capacitaciones en progreso.
-- Capacitaciones aprobadas.
-- Capacitaciones no aprobadas.
-- Promedio institucional de pretest.
-- Promedio institucional de postest.
-- Mejora promedio del aprendizaje.
-- Número de certificados emitidos.
+Estado: ✅ COMPLETADO EN SU ALCANCE ACTUAL
 
-El porcentaje de cumplimiento se calcula a partir de las asignaciones finalizadas respecto del total de asignaciones.
+Permite consultar indicadores personales, próximas capacitaciones, últimas capacitaciones, certificados recientes y acceder a las secciones personales.
 
-Los promedios institucionales se calculan únicamente con resultados válidos disponibles, evitando interpretar la ausencia de una evaluación como una calificación de cero.
+12. Reportes institucionales
 
-### Resumen por acción de formación
+Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
 
-Se encuentra implementado y validado un resumen institucional por cada acción de formación activa.
+La aplicación reports está implementada y funcional. Dispone de página propia integrada a HospitalLearning, siete bloques de reportes institucionales, filtros y exportación.
 
-Permite visualizar:
+Exportación
 
-- Nombre de la capacitación.
-- Código.
-- Tipo de acción.
-- Número de participantes asignados.
-- Pendientes.
-- En progreso.
-- Completados.
-- Aprobados.
-- No aprobados.
-- Porcentaje de cumplimiento.
-- Promedio de postest cuando existe.
-- Certificados emitidos.
+Excel.
 
-### Resumen de participantes
+PDF.
 
-Se encuentra implementado y validado un resumen individual de los usuarios con capacitaciones asignadas y vinculación activa a la institución.
+Los reportes utilizan la información de HospitalLearning y respetan el contexto institucional del administrador.
 
-Permite visualizar:
+Mejoras futuras
 
-- Participante.
-- Documento.
-- Profesión.
-- Capacitaciones asignadas.
-- Pendientes.
-- En progreso.
-- Completadas.
-- Aprobadas.
-- No aprobadas.
-- Porcentaje de cumplimiento.
-- Promedio de postest cuando existe.
-- Certificados emitidos.
+Refinar formatos Excel/PDF.
 
-La lógica del resumen de participantes fue validada tanto desde la consola de Django como desde la interfaz del Dashboard institucional.
+Incorporar nuevos reportes según necesidades institucionales.
 
-### Pendiente
+Validar escenarios multi-IPS.
 
-Incorporar filtros institucionales por:
+Incorporar nuevas dimensiones cuando el modelo lo requiera.
 
-- Acción de formación.
-- Tipo de acción.
-- Profesión.
-- Servicio.
-- Estado.
-- Período.
+13. Navegación e interfaces por rol
 
-La institución no se plantea inicialmente como un filtro manual dentro del Dashboard, debido a que la información ya se restringe automáticamente a la IPS activa asociada al usuario administrador. Este criterio deberá revisarse cuando se implemente completamente la administración multi-IPS.
+Estado: ✅ COMPLETADO EN SU NÚCLEO FUNCIONAL
 
----
+Administrador
 
-## 11.2 Dashboard personal del participante
+Dashboard institucional.
 
-El Dashboard personal se encuentra funcional.
+Capacitaciones.
 
-Permite visualizar:
+Usuarios.
 
-- Capacitaciones asignadas.
-- Capacitaciones pendientes.
-- Capacitaciones en progreso.
-- Capacitaciones realizadas.
-- Capacitaciones aprobadas.
-- Capacitaciones no aprobadas.
-- Promedio pretest.
-- Promedio postest.
-- Mejora promedio.
-- Certificados activos.
-- Próximas capacitaciones.
-- Últimas capacitaciones realizadas.
-- Certificados recientes.
+Evaluaciones.
 
-El participante puede acceder desde el Dashboard a sus capacitaciones y certificados.
+Certificados.
 
----
+Reportes institucionales.
 
-# 12. Reportes
+Configuración.
 
-## Estado: ⏳ PENDIENTE
+Las secciones principales utilizan páginas propias de HospitalLearning y conservan el menú lateral. Django Admin permanece como respaldo técnico.
 
-La aplicación `reports` se encuentra creada, pero el componente funcional aún debe desarrollarse.
+Participante
 
-Los reportes deberán generarse a partir de la información existente en HospitalLearning.
+Mi inicio.
 
-Reportes previstos:
+Mis capacitaciones.
 
-- Cumplimiento de capacitaciones.
-- Capacitaciones pendientes.
-- Historial de formación por usuario.
-- Resultados de evaluaciones.
-- Certificados emitidos.
-- Cumplimiento por profesión.
-- Cumplimiento por servicio.
-- Cumplimiento por institución.
-- Seguimiento por acción de formación.
+Mis certificados.
 
-## Exportación prevista
+Mi perfil.
 
-- Excel.
-- PDF.
+Las páginas conservan la navegación del participante.
 
-El desarrollo de reportes institucionales comenzará después de consolidar el Dashboard institucional y sus indicadores principales.
+14. Configuración institucional
 
----
+Estado: 🟡 EN DESARROLLO
 
-# 13. Despliegue en producción
+Existe una página propia que permite consultar institución activa, tipos de acción, servicios, estados y requisitos de certificado.
 
-## Estado: ⏳ PENDIENTE
+Pendiente
 
-Actualmente HospitalLearning funciona en entorno local de desarrollo mediante Django.
+Definir parámetros editables.
 
-Antes del despliegue deberán revisarse:
+Formularios internos.
 
-- Configuración de producción.
-- Base de datos.
-- Seguridad.
-- Variables de entorno.
-- Archivos estáticos.
-- Archivos cargados por usuarios.
-- Copias de seguridad.
-- Servidor WSGI o ASGI.
-- Dominio.
-- HTTPS.
-- Estrategia de despliegue.
-- Administración de múltiples IPS.
+Permisos de modificación.
 
----
+Personalización institucional.
 
-# Documentación del proyecto
+Validación multi-IPS.
 
-| Documento | Estado |
-| --- | --- |
-| 00_ROADMAP.md | 🟡 Requiere actualización periódica |
-| 01_vision_del_proyecto.md | ✅ Elaborado |
-| 02_modelo_funcional.md | ✅ Elaborado |
-| 03_modelo_de_datos.md | 🟡 Requiere depuración y actualización |
-| 99_ideas_futuras.md | ✅ Disponible |
-| PROMPT_MAESTRO_HOSPITALLEARNING.md | ✅ Disponible |
+15. Validación multi-IPS
 
----
+Estado: 🟡 EN DESARROLLO
 
-# Observación sobre el modelo de datos
+Actualmente los usuarios pueden tener vinculaciones institucionales; las acciones pertenecen a una institución; y Dashboard, reportes e interfaces administrativas usan el contexto de la institución activa.
 
-El documento `03_modelo_de_datos.md` contiene definiciones correspondientes a diferentes momentos de evolución del proyecto.
+Pendiente
 
-Antes de considerarlo definitivo se deberá:
+Probar usuarios vinculados a varias IPS.
 
-- Eliminar definiciones duplicadas.
-- Actualizar las entidades según los modelos Django realmente implementados.
-- Incorporar TrainingAssignment.
-- Incorporar TrainingResult.
-- Actualizar Certificate.
-- Definir la relación entre evaluaciones HTML y evaluaciones nativas de HospitalLearning.
-- Revisar el alcance multi-IPS.
-- Mantener la trazabilidad de las decisiones arquitectónicas.
+Definir comportamiento con varias vinculaciones activas.
 
----
+Implementar, si corresponde, selector de institución.
 
-# Objetivo de la versión 1.0
+Revisar aislamiento de datos en todos los módulos.
 
-Desarrollar una plataforma web para gestionar acciones de formación continua dirigidas al talento humano en salud, incluyendo:
+Revisar permisos administrativos por institución.
 
-- Instituciones y usuarios.
-- Acciones de formación.
-- Asignación de participantes.
-- Contenido educativo interactivo.
-- Seguimiento del progreso.
-- Evaluación del aprendizaje.
-- Certificación.
-- Bibliotecas institucionales.
-- Dashboard.
-- Indicadores.
-- Reportes.
+Realizar pruebas integrales de multi-tenancy lógico.
+
+16. Despliegue en producción
+
+Estado: ⏳ PENDIENTE
+
+Actualmente HospitalLearning funciona en entorno local.
+
+Antes de producción deberán revisarse configuración de producción, base de datos, seguridad, SECRET_KEY mediante variable de entorno, DEBUG = False, ALLOWED_HOSTS, archivos estáticos y multimedia, copias de seguridad, servidor WSGI/ASGI, dominio, HTTPS, estrategia de despliegue, multi-IPS y pruebas funcionales y de seguridad.
+
+Documentación del proyecto
+
+Documento
+
+Estado
+
+00_ROADMAP.md
+
+✅ Actualizado al estado funcional actual
+
+01_vision_del_proyecto.md
+
+✅ Elaborado
+
+02_modelo_funcional.md
+
+✅ Elaborado
+
+03_modelo_de_datos.md
+
+🟡 Requiere depuración y actualización
+
+99_ideas_futuras.md
+
+✅ Disponible
+
+PROMPT_MAESTRO_HOSPITALLEARNING.md
+
+✅ Disponible
+
+Observación sobre el modelo de datos
+
+03_modelo_de_datos.md deberá depurarse y actualizarse según los modelos Django realmente implementados, TrainingAssignment, TrainingResult, Certificate, las interfaces actuales, la futura relación entre evaluaciones HTML y nativas, las bibliotecas institucionales y el alcance multi-IPS.
+
+Objetivo de la versión 1.0
+
+Desarrollar una plataforma web para gestionar acciones de formación continua dirigidas al talento humano en salud, incluyendo instituciones y usuarios, acciones de formación, asignaciones, contenido interactivo, seguimiento, evaluación, certificación, bibliotecas institucionales, Dashboard, indicadores, reportes, navegación diferenciada por rol y administración institucional integrada.
 
 La arquitectura deberá permitir el uso de HospitalLearning por múltiples Instituciones Prestadoras de Servicios de Salud.
 
----
+PRÓXIMO OBJETIVO
 
-# PRÓXIMO OBJETIVO
+Bibliotecas institucionales
 
-## Filtros del Dashboard institucional
+El siguiente bloque será implementar conjuntamente:
 
-Los indicadores principales del Dashboard institucional, el resumen por acción de formación y el resumen de participantes ya se encuentran implementados y validados.
+Biblioteca Documental
 
-El siguiente desarrollo será incorporar filtros que permitan analizar la información institucional sin perder el aislamiento de datos por IPS.
+Biblioteca Multimedia
 
-Se desarrollarán progresivamente filtros por:
+Las bibliotecas deberán:
 
-1. Acción de formación.
-2. Tipo de acción.
-3. Profesión.
-4. Servicio.
-5. Estado.
-6. Período.
+Respetar el aislamiento por institución.
 
-Los filtros deberán aplicarse de forma coherente a los indicadores generales y a los resúmenes institucionales, evitando inconsistencias entre tarjetas, acciones de formación y participantes.
+Permitir reutilización de recursos.
 
-La institución continuará determinándose inicialmente mediante la vinculación institucional activa del usuario administrador. La selección manual de IPS se evaluará posteriormente dentro de la validación completa del funcionamiento multi-IPS.
+Permitir asociación con acciones de formación.
 
-Una vez implementados y validados los filtros institucionales se continuará con el desarrollo del módulo de reportes institucionales.
+Integrarse con la navegación administrativa.
 
+Mantener trazabilidad básica.
+
+Evitar duplicación innecesaria de recursos.
+
+Preparar la arquitectura para futuras mejoras de versionamiento y vigencia documental.
+
+La Biblioteca Documental gestionará protocolos, guías, procedimientos, manuales, instructivos, formatos, resoluciones y otros documentos institucionales.
+
+La Biblioteca Multimedia gestionará videos, presentaciones, audios, imágenes, infografías, enlaces y otros recursos multimedia.
+
+Una vez implementadas y validadas ambas bibliotecas, el siguiente bloque será definir e implementar el Banco Institucional de Preguntas y las evaluaciones nativas, preservando la compatibilidad con las evaluaciones actualmente incorporadas en contenidos HTML.
