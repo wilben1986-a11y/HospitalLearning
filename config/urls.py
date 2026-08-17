@@ -46,6 +46,11 @@ urlpatterns = [
         include("reports.urls"),
     ),
 
+    path(
+        "recursos/",
+        include("resources.urls"),
+    ),
+
     path("", include("pages.urls")),
 ]
 

@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Biblioteca multimedia | HospitalLearning{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <h2 class="mb-1">Biblioteca multimedia</h2>
+        <p class="text-muted mb-0">{{ institution }}</p>
+        <p class="text-muted small mb-0">
+            Recursos multimedia reutilizables en acciones de formación.
+        </p>
+    </div>
+
+    <a
+        href="{% url 'resources_ui:media_create' %}"
+        class="btn btn-primary"
+    >
+        Nuevo recurso
+    </a>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+
+        <form method="get" class="row g-3 align-items-end">
+
+            <div class="col-md-5">
+                <label class="form-label">Buscar</label>
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ q }}"
+                    class="form-control"
+                    placeholder="Título, descripción, enlace o capacitación"
+                >
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Tipo de recurso</label>
+                <select name="media_type" class="form-select">
+                    <option value="">Todos</option>
+
+                    {% for value, label in media_type_choices %}
+                        <option
+                            value="{{ value }}"
+                            {% if selected_media_type == value %}selected{% endif %}
+                        >
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Estado</label>
+                <select name="active" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="yes" {% if selected_active == "yes" %}selected{% endif %}>
+                        Activos
+                    </option>
+                    <option value="no" {% if selected_active == "no" %}selected{% endif %}>
+                        Inactivos
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <button class="btn btn-primary">
+                    Filtrar
+                </button>
+            </div>
+
+            <div class="col-auto">
+                <a
+                    href="{% url 'resources_ui:media_library' %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Limpiar
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Recurso</th>
+                        <th>Tipo</th>
+                        <th>Origen</th>
+                        <th>Capacitaciones</th>
+                        <th>Estado</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in resources %}
+
+                        <tr>
+                            <td>
+                                <strong>{{ item.title }}</strong>
+
+                                {% if item.description %}
+                                    <div class="text-muted small">
+                                        {{ item.description|truncatechars:90 }}
+                                    </div>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ item.get_media_type_display }}</td>
+
+                            <td>
+                                {% if item.file %}
+                                    Archivo
+                                {% elif item.external_url %}
+                                    Enlace externo
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% for training in item.training_actions.all %}
+                                    <span class="badge text-bg-light border mb-1">
+                                        {{ training.code }}
+                                    </span>
+                                {% empty %}
+                                    <span class="text-muted">
+                                        Sin asociación
+                                    </span>
+                                {% endfor %}
+                            </td>
+
+                            <td>
+                                {% if item.active %}
+                                    <span class="badge bg-success">
+                                        Activo
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        Inactivo
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-end">
+
+                                {% if item.file %}
+                                    <a
+                                        href="{{ item.file.url }}"
+                                        target="_blank"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+                                        Abrir archivo
+                                    </a>
+                                {% endif %}
+
+                                {% if item.external_url %}
+                                    <a
+                                        href="{{ item.external_url }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+                                        Abrir enlace
+                                    </a>
+                                {% endif %}
+
+                                <a
+                                    href="{% url 'resources_ui:media_edit' item.pk %}"
+                                    class="btn btn-sm btn-outline-secondary"
+                                >
+                                    Editar
+                                </a>
+
+                            </td>
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td
+                                colspan="6"
+                                class="text-center text-muted py-5"
+                            >
+                                Aún no hay recursos multimedia registrados.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
